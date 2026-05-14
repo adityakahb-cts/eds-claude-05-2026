@@ -12,7 +12,7 @@
 
 /* eslint-env browser */
 function sampleRUM(checkpoint, data) {
-  // eslint-disable-next-line max-len
+   
   const timeShift = () => (window.performance ? window.performance.now() : Date.now() - window.hlx.rum.firstReadTime);
   try {
     window.hlx = window.hlx || {};
@@ -34,7 +34,7 @@ function sampleRUM(checkpoint, data) {
       const id = (window.hlx.rum && window.hlx.rum.id) || crypto.randomUUID().slice(-9);
       const isSelected = (window.hlx.rum && window.hlx.rum.isSelected)
         || (weight > 0 && Math.random() * weight < 1);
-      // eslint-disable-next-line object-curly-newline, max-len
+       
       window.hlx.rum = {
         weight,
         id,
@@ -93,7 +93,7 @@ function sampleRUM(checkpoint, data) {
         sampleRUM.baseURL = sampleRUM.baseURL || new URL(window.RUM_BASE || '/', new URL('https://ot.aem.live'));
         sampleRUM.collectBaseURL = sampleRUM.collectBaseURL || sampleRUM.baseURL;
         sampleRUM.sendPing = (ck, time, pingData = {}) => {
-          // eslint-disable-next-line max-len, object-curly-newline
+           
           const rumData = JSON.stringify({
             weight,
             id,
@@ -207,7 +207,7 @@ function toCamelCase(name) {
  * @param {Element} block The block element
  * @returns {object} The block config
  */
-// eslint-disable-next-line import/prefer-default-export
+ 
 function readBlockConfig(block) {
   const config = {};
   block.querySelectorAll(':scope > div').forEach((row) => {
