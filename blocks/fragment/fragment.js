@@ -5,13 +5,9 @@
  */
 
 // eslint-disable-next-line import/no-cycle
-import {
-  decorateMain,
-} from '../../scripts/scripts.js';
+import { decorateMain } from '../../scripts/scripts.js';
 
-import {
-  loadSections,
-} from '../../scripts/aem.js';
+import { loadSections } from '../../scripts/aem.js';
 
 /**
  * Loads a fragment.
