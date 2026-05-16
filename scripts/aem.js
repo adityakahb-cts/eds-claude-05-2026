@@ -12,7 +12,6 @@
 
 /* eslint-env browser */
 function sampleRUM(checkpoint, data) {
-  // eslint-disable-next-line max-len
   const timeShift = () => (window.performance ? window.performance.now() : Date.now() - window.hlx.rum.firstReadTime);
   try {
     window.hlx = window.hlx || {};
@@ -20,10 +19,11 @@ function sampleRUM(checkpoint, data) {
       sampleRUM.enhance = () => {};
       const params = new URLSearchParams(window.location.search);
       const { currentScript } = document;
-      const rate = params.get('rum')
-        || window.SAMPLE_PAGEVIEWS_AT_RATE
-        || params.get('optel')
-        || (currentScript && currentScript.dataset.rate);
+      const rate =
+        params.get('rum') ||
+        window.SAMPLE_PAGEVIEWS_AT_RATE ||
+        params.get('optel') ||
+        (currentScript && currentScript.dataset.rate);
       const rateValue = {
         on: 1,
         off: 0,
@@ -32,9 +32,8 @@ function sampleRUM(checkpoint, data) {
       }[rate];
       const weight = rateValue !== undefined ? rateValue : 100;
       const id = (window.hlx.rum && window.hlx.rum.id) || crypto.randomUUID().slice(-9);
-      const isSelected = (window.hlx.rum && window.hlx.rum.isSelected)
-        || (weight > 0 && Math.random() * weight < 1);
-      // eslint-disable-next-line object-curly-newline, max-len
+      const isSelected = (window.hlx.rum && window.hlx.rum.isSelected) || (weight > 0 && Math.random() * weight < 1);
+
       window.hlx.rum = {
         weight,
         id,
@@ -93,7 +92,6 @@ function sampleRUM(checkpoint, data) {
         sampleRUM.baseURL = sampleRUM.baseURL || new URL(window.RUM_BASE || '/', new URL('https://ot.aem.live'));
         sampleRUM.collectBaseURL = sampleRUM.collectBaseURL || sampleRUM.baseURL;
         sampleRUM.sendPing = (ck, time, pingData = {}) => {
-          // eslint-disable-next-line max-len, object-curly-newline
           const rumData = JSON.stringify({
             weight,
             id,
@@ -102,16 +100,12 @@ function sampleRUM(checkpoint, data) {
             t: time,
             ...pingData,
           });
-          const urlParams = window.RUM_PARAMS
-            ? new URLSearchParams(window.RUM_PARAMS).toString() || ''
-            : '';
+          const urlParams = window.RUM_PARAMS ? new URLSearchParams(window.RUM_PARAMS).toString() || '' : '';
           const { href: url, origin } = new URL(
             `.rum/${weight}${urlParams ? `?${urlParams}` : ''}`,
             sampleRUM.collectBaseURL,
           );
-          const body = origin === window.location.origin
-            ? new Blob([rumData], { type: 'application/json' })
-            : rumData;
+          const body = origin === window.location.origin ? new Blob([rumData], { type: 'application/json' }) : rumData;
           navigator.sendBeacon(url, body);
           // eslint-disable-next-line no-console
           console.debug(`ping:${ck}`, pingData);
@@ -186,10 +180,10 @@ function init() {
 function toClassName(name) {
   return typeof name === 'string'
     ? name
-      .toLowerCase()
-      .replace(/[^0-9a-z]/gi, '-')
-      .replace(/-+/g, '-')
-      .replace(/^-|-$/g, '')
+        .toLowerCase()
+        .replace(/[^0-9a-z]/gi, '-')
+        .replace(/-+/g, '-')
+        .replace(/^-|-$/g, '')
     : '';
 }
 
@@ -207,7 +201,7 @@ function toCamelCase(name) {
  * @param {Element} block The block element
  * @returns {object} The block config
  */
-// eslint-disable-next-line import/prefer-default-export
+
 function readBlockConfig(block) {
   const config = {};
   block.querySelectorAll(':scope > div').forEach((row) => {
@@ -298,9 +292,7 @@ async function loadScript(src, attrs) {
  */
 function getMetadata(name, doc = document) {
   const attr = name && name.includes(':') ? 'property' : 'name';
-  const meta = [...doc.head.querySelectorAll(`meta[${attr}="${name}"]`)]
-    .map((m) => m.content)
-    .join(', ');
+  const meta = [...doc.head.querySelectorAll(`meta[${attr}="${name}"]`)].map((m) => m.content).join(', ');
   return meta || '';
 }
 
@@ -328,10 +320,7 @@ function createOptimizedPicture(
     const source = document.createElement('source');
     if (br.media) source.setAttribute('media', br.media);
     source.setAttribute('type', 'image/webp');
-    source.setAttribute(
-      'srcset',
-      `${origin}${pathname}?width=${br.width}&format=webply&optimize=medium`,
-    );
+    source.setAttribute('srcset', `${origin}${pathname}?width=${br.width}&format=webply&optimize=medium`);
     picture.appendChild(source);
   });
 
@@ -340,20 +329,14 @@ function createOptimizedPicture(
     if (i < breakpoints.length - 1) {
       const source = document.createElement('source');
       if (br.media) source.setAttribute('media', br.media);
-      source.setAttribute(
-        'srcset',
-        `${origin}${pathname}?width=${br.width}&format=${ext}&optimize=medium`,
-      );
+      source.setAttribute('srcset', `${origin}${pathname}?width=${br.width}&format=${ext}&optimize=medium`);
       picture.appendChild(source);
     } else {
       const img = document.createElement('img');
       img.setAttribute('loading', eager ? 'eager' : 'lazy');
       img.setAttribute('alt', alt);
       picture.appendChild(img);
-      img.setAttribute(
-        'src',
-        `${origin}${pathname}?width=${br.width}&format=${ext}&optimize=medium`,
-      );
+      img.setAttribute('src', `${origin}${pathname}?width=${br.width}&format=${ext}&optimize=medium`);
     }
   });
 
@@ -380,20 +363,7 @@ function decorateTemplateAndTheme() {
  * @param {Element} block the block element
  */
 function wrapTextNodes(block) {
-  const validWrappers = [
-    'P',
-    'PRE',
-    'UL',
-    'OL',
-    'PICTURE',
-    'TABLE',
-    'H1',
-    'H2',
-    'H3',
-    'H4',
-    'H5',
-    'H6',
-  ];
+  const validWrappers = ['P', 'PRE', 'UL', 'OL', 'PICTURE', 'TABLE', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6'];
 
   const wrap = (el) => {
     const wrapper = document.createElement('p');
@@ -403,13 +373,14 @@ function wrapTextNodes(block) {
 
   block.querySelectorAll(':scope > div > div').forEach((blockColumn) => {
     if (blockColumn.hasChildNodes()) {
-      const hasWrapper = !!blockColumn.firstElementChild
-        && validWrappers.some((tagName) => blockColumn.firstElementChild.tagName === tagName);
+      const hasWrapper =
+        !!blockColumn.firstElementChild &&
+        validWrappers.some((tagName) => blockColumn.firstElementChild.tagName === tagName);
       if (!hasWrapper) {
         wrap(blockColumn);
       } else if (
-        blockColumn.firstElementChild.tagName === 'PICTURE'
-        && (blockColumn.children.length > 1 || !!blockColumn.textContent.trim())
+        blockColumn.firstElementChild.tagName === 'PICTURE' &&
+        (blockColumn.children.length > 1 || !!blockColumn.textContent.trim())
       ) {
         wrap(blockColumn);
       }
@@ -519,9 +490,7 @@ async function loadBlock(block) {
       const decorationComplete = new Promise((resolve) => {
         (async () => {
           try {
-            const mod = await import(
-              `${window.hlx.codeBasePath}/blocks/${blockName}/${blockName}.js`
-            );
+            const mod = await import(`${window.hlx.codeBasePath}/blocks/${blockName}/${blockName}.js`);
             if (mod.default) {
               await mod.default(block);
             }
