@@ -5,3 +5,8 @@ LICENSE
 package.json
 package-lock.json
 test/*
+tests/*
+vitest.config.js
+playwright.config.js
+playwright-report/*
+test-results/*
