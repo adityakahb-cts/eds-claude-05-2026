@@ -1,0 +1,22 @@
+[
+  {
+    "id": "fragment",
+    "fields": [
+      {
+        "component": "text-input",
+        "valueType": "string",
+        "name": "path",
+        "label": "Fragment Path",
+        "multi": false
+      }
+    ]
+  },
+  {
+    "id": "header",
+    "fields": []
+  },
+  {
+    "id": "footer",
+    "fields": []
+  }
+]

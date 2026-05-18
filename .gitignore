@@ -3,6 +3,15 @@ coverage/*
 logs/*
 node_modules/*
 
+# Environment files — never commit secrets
+.env
+.env.*
+!.env.example
+
+# Test artifacts
+playwright-report/
+test-results/
+
 helix-importer-ui
 .DS_Store
 *.bak

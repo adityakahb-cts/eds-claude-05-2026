@@ -12,7 +12,29 @@
     "format": "prettier --write \"**/*.{js,css,json,md}\" --ignore-path .prettierignore",
     "format:check": "prettier --check \"**/*.{js,css,json,md}\" --ignore-path .prettierignore",
     "postlint": "npm run format:check",
-    "postlint:fix": "npm run format"
+    "postlint:fix": "npm run format",
+    "prepare": "husky",
+    "test:unit": "vitest run",
+    "test:unit:watch": "vitest",
+    "test:unit:coverage": "vitest run --coverage",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:report": "playwright show-report",
+    "test": "npm run test:unit && npm run test:e2e"
+  },
+  "lint-staged": {
+    "*.js": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.css": [
+      "stylelint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md}": [
+      "prettier --write"
+    ],
+    ".env*": "bash -c 'echo \"ERROR: Attempted to stage a .env file — remove it and add to .gitignore\" && exit 1'"
   },
   "repository": {
     "type": "git",
@@ -27,14 +49,20 @@
   "devDependencies": {
     "@eslint/eslintrc": "^2.1.4",
     "@eslint/js": "^8.57.0",
+    "@playwright/test": "^1.60.0",
+    "@vitest/coverage-v8": "^4.1.6",
     "eslint": "^8.57.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-import": "^2.32.0",
     "globals": "^13.24.0",
+    "husky": "^9.1.7",
+    "jsdom": "^29.1.1",
+    "lint-staged": "^16.4.0",
     "prettier": "^3.5.3",
     "stylelint": "^16.20.0",
     "stylelint-config-standard": "^37.0.0",
-    "stylelint-prettier": "^5.0.3"
+    "stylelint-prettier": "^5.0.3",
+    "vitest": "^4.1.6"
   }
 }
