@@ -1,0 +1,65 @@
+$breakpoints: (
+  sm: 632px,
+  md: 760px,
+  lg: 992px,
+  xl: 1272px,
+  xxl: 1432px,
+);
+ 
+$font-sizes-max: (
+  display1: 52px,
+  display2: 48px,
+  display3: 44px,
+  display4: 40px,
+  display5: 36px,
+  display6: 32px,
+  h1: 48px,
+  h2: 40px,
+  h3: 36px,
+  h4: 32px,
+  h5: 28px,
+  h6: 24px,
+  intro: 28px,
+  p: 20px,
+  small: 16px,
+);
+ 
+$font-sizes-min: (
+  display1: 32px,
+  display2: 30px,
+  display3: 28px,
+  display4: 26px,
+  display5: 24px,
+  display6: 22px,
+  h1: 28px,
+  h2: 26px,
+  h3: 24px,
+  h4: 22px,
+  h5: 20px,
+  h6: 18px,
+  intro: 20px,
+  p: 16px,
+  small: 14px,
+);
+ 
+$font-sizes-display-min: map.get($breakpoints, sm);
+$font-sizes-display-max: map.get($breakpoints, xxl);
+
+$container-max-widths: (
+  sm: px-to-rem(600px),
+  md: px-to-rem(720px),
+  lg: px-to-rem(960px),
+  xl: px-to-rem(1140px),
+  xxl: px-to-rem(1400px),
+);
+ 
+$grid-gutter-width: px-to-rem(48px);
+$grid-row-columns: 6;
+
+$widths: (
+  25: 25%,
+  50: 50%,
+  75: 75%,
+  100: 100%,
+  auto: auto,
+);

@@ -1,7 +1,8 @@
 import {
+  buildBlock,
   loadHeader,
   loadFooter,
-  decorateIcons,
+  decorateButtons,
   decorateSections,
   decorateBlocks,
   decorateTemplateAndTheme,
@@ -10,6 +11,41 @@ import {
   loadSections,
   loadCSS,
 } from './aem.js';
+import { decorateIcons, decorateRegenElements } from './config/global-decorators.js';
+
+/**
+ * Encodes a plain-text string for safe use inside an HTML attribute value.
+ * Use this when interpolating text into markup template attribute values.
+ * @param {string} str The plain text to encode
+ * @returns {string} HTML-encoded string safe for attribute values
+ */
+export function encodeHtml(str) {
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+}
+
+/**
+ * Builds hero block and prepends to main in a new section.
+ * @param {Element} main The container element
+ */
+function buildHeroBlock(main) {
+  const h1 = main.querySelector('h1');
+  const picture = main.querySelector('picture');
+  // eslint-disable-next-line no-bitwise
+  if (h1 && picture && h1.compareDocumentPosition(picture) & Node.DOCUMENT_POSITION_PRECEDING) {
+    // Check if h1 or picture is already inside a hero block
+    if (h1.closest('.hero') || picture.closest('.hero')) {
+      return; // Don't create a duplicate hero block
+    }
+    const section = document.createElement('div');
+    section.append(buildBlock('hero', { elems: [picture, h1] }));
+    main.prepend(section);
+  }
+}
 
 /**
  * load fonts.css and set a session storage flag
@@ -46,52 +82,12 @@ function buildAutoBlocks(main) {
         });
       });
     }
+
+    buildHeroBlock(main);
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error('Auto Blocking failed', error);
   }
-}
-
-/**
- * Decorates formatted links to style them as buttons.
- * @param {HTMLElement} main The main container element
- */
-function decorateButtons(main) {
-  main.querySelectorAll('p a[href]').forEach((a) => {
-    a.title = a.title || a.textContent;
-    const p = a.closest('p');
-    const text = a.textContent.trim();
-
-    // quick structural checks
-    if (a.querySelector('img') || p.textContent.trim() !== text) return;
-
-    // skip URL display links
-    try {
-      if (new URL(a.href).href === new URL(text, window.location).href) return;
-    } catch {
-      /* continue */
-    }
-
-    // require authored formatting for buttonization
-    const strong = a.closest('strong');
-    const em = a.closest('em');
-    if (!strong && !em) return;
-
-    p.className = 'button-wrapper';
-    a.className = 'button';
-    if (strong && em) {
-      // high-impact call-to-action
-      a.classList.add('accent');
-      const outer = strong.contains(em) ? strong : em;
-      outer.replaceWith(a);
-    } else if (strong) {
-      a.classList.add('primary');
-      strong.replaceWith(a);
-    } else {
-      a.classList.add('secondary');
-      em.replaceWith(a);
-    }
-  });
 }
 
 /**
@@ -100,11 +96,13 @@ function decorateButtons(main) {
  */
 // eslint-disable-next-line import/prefer-default-export
 export function decorateMain(main) {
+  // hopefully forward compatible button decoration
+  decorateButtons(main);
   decorateIcons(main);
+  decorateRegenElements(main);
   buildAutoBlocks(main);
   decorateSections(main);
   decorateBlocks(main);
-  decorateButtons(main);
 }
 
 /**
@@ -156,6 +154,7 @@ async function loadLazy(doc) {
  * without impacting the user experience.
  */
 function loadDelayed() {
+  // eslint-disable-next-line import/no-cycle
   window.setTimeout(() => import('./delayed.js'), 3000);
   // load anything that can be postponed to the latest here
 }

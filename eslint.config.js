@@ -9,7 +9,15 @@ const compat = new FlatCompat({
 
 export default [
   {
-    ignores: ['helix-importer-ui/**', '**/*.min.js', 'scripts/aem.js', 'scripts/scripts.js', 'scripts/delayed.js'],
+    ignores: [
+      'helix-importer-ui/**',
+      '**/*.min.js',
+      '__extras/**',
+      'scripts/aem.js',
+      'scripts/scripts.js',
+      'scripts/delayed.js',
+      'scripts/vendor/**',
+    ],
   },
   ...compat.extends('airbnb-base', 'prettier'),
   {
