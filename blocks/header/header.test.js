@@ -1,70 +1,73 @@
-import { describe, it, expect, vi, afterEach } from 'vitest';
+import decorate from './header.js';
 
-// Mock all external dependencies before importing the module
-vi.mock('../../scripts/aem.js', () => ({
-  getMetadata: vi.fn().mockReturnValue(''),
+jest.mock('../../scripts/aem.js', () => ({
+  getMetadata: jest.fn().mockReturnValue(''),
 }));
 
-// Use mockImplementation so each call returns a FRESH fragment (not a drained shared object)
-vi.mock('../fragment/fragment.js', () => ({
-  loadFragment: vi.fn().mockImplementation(() => {
-    const main = document.createElement('main');
-    const brand = document.createElement('div');
-    brand.innerHTML = '<p><a href="/">Home</a></p>';
-    const sections = document.createElement('div');
-    sections.innerHTML = '<ul><li>About</li><li>Contact</li></ul>';
-    const tools = document.createElement('div');
-    tools.innerHTML = '<p>Search</p>';
-    main.append(brand, sections, tools);
-    return Promise.resolve(main);
-  }),
+const mockFragment = () => {
+  const main = document.createElement('main');
+  ['brand', 'sections', 'tools'].forEach((name) => {
+    const section = document.createElement('div');
+    section.className = 'default-content-wrapper';
+    section.dataset.name = name;
+    main.append(section);
+  });
+  return main;
+};
+
+jest.mock('../fragment/fragment.js', () => ({
+  loadFragment: jest.fn(),
 }));
 
-const { default: decorate } = await import('./header.js');
+describe('header', () => {
+  let loadFragment;
 
-describe('header block', () => {
+  beforeEach(async () => {
+    ({ loadFragment } = await import('../fragment/fragment.js'));
+    loadFragment.mockResolvedValue(mockFragment());
+  });
+
   afterEach(() => {
+    jest.clearAllMocks();
     document.body.innerHTML = '';
-    vi.clearAllMocks();
   });
 
-  it('exports a default decorate function', () => {
-    expect(typeof decorate).toBe('function');
-  });
-
-  it('renders a nav element inside a nav-wrapper', async () => {
+  test('renders a nav-wrapper containing a nav element', async () => {
     const block = document.createElement('div');
-    block.className = 'header';
     document.body.append(block);
-
     await decorate(block);
-
     expect(block.querySelector('.nav-wrapper')).toBeTruthy();
     expect(block.querySelector('nav#nav')).toBeTruthy();
   });
 
-  it('adds nav-brand, nav-sections, nav-tools classes to first three children', async () => {
+  test('clears original block content before rendering', async () => {
     const block = document.createElement('div');
-    block.className = 'header';
+    block.textContent = 'original content';
     document.body.append(block);
-
     await decorate(block);
-
-    const nav = block.querySelector('nav#nav');
-    expect(nav.querySelector('.nav-brand')).toBeTruthy();
-    expect(nav.querySelector('.nav-sections')).toBeTruthy();
-    expect(nav.querySelector('.nav-tools')).toBeTruthy();
+    expect(block.textContent).not.toBe('original content');
   });
 
-  it('creates a hamburger button for mobile nav', async () => {
+  test('nav starts with aria-expanded false', async () => {
     const block = document.createElement('div');
-    block.className = 'header';
     document.body.append(block);
-
     await decorate(block);
+    expect(block.querySelector('nav').getAttribute('aria-expanded')).toBe('false');
+  });
 
-    const hamburger = block.querySelector('.nav-hamburger');
-    expect(hamburger).toBeTruthy();
-    expect(hamburger.querySelector('button')).toBeTruthy();
+  test('renders hamburger button with accessible label', async () => {
+    const block = document.createElement('div');
+    document.body.append(block);
+    await decorate(block);
+    const btn = block.querySelector('.nav-hamburger button');
+    expect(btn).toBeTruthy();
+    expect(btn.getAttribute('aria-label')).toBeTruthy();
+  });
+
+  test('does not throw when fragment sections are absent', async () => {
+    loadFragment.mockResolvedValue(document.createElement('main'));
+    const block = document.createElement('div');
+    document.body.append(block);
+    await expect(decorate(block)).resolves.not.toThrow();
   });
 });

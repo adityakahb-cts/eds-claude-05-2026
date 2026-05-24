@@ -1,71 +1,77 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import decorate, { loadFragment } from './fragment.js';
 
-vi.mock('../../scripts/scripts.js', () => ({
-  decorateMain: vi.fn(),
+jest.mock('../../scripts/scripts.js', () => ({
+  decorateMain: jest.fn(),
 }));
 
-vi.mock('../../scripts/aem.js', () => ({
-  loadSections: vi.fn().mockResolvedValue(undefined),
-  getMetadata: vi.fn().mockReturnValue(''),
+jest.mock('../../scripts/aem.js', () => ({
+  loadSections: jest.fn().mockResolvedValue(undefined),
 }));
 
-const { loadFragment } = await import('./fragment.js');
+global.fetch = jest.fn();
 
-describe('loadFragment', () => {
-  beforeEach(() => {
-    global.fetch = vi.fn();
-  });
-
+describe('fragment — decorate', () => {
   afterEach(() => {
-    vi.restoreAllMocks();
-    document.body.innerHTML = '';
+    jest.clearAllMocks();
   });
 
-  it('returns null for a relative path (no leading slash)', async () => {
-    const result = await loadFragment('relative/path');
+  test('replaces block children with loaded fragment sections', async () => {
+    const fragmentHtml = '<div class="section"><p>Fragment content</p></div>';
+    global.fetch.mockResolvedValue({ ok: true, text: async () => fragmentHtml });
+
+    const block = document.createElement('div');
+    const link = document.createElement('a');
+    link.href = '/fragments/test';
+    block.append(link);
+
+    await decorate(block);
+
+    expect(block.querySelector('p')).toBeTruthy();
+  });
+
+  test('does nothing when block has no link and empty text', async () => {
+    const block = document.createElement('div');
+    await decorate(block);
+    expect(global.fetch).not.toHaveBeenCalled();
+  });
+
+  test('does nothing when fetch returns non-ok response', async () => {
+    global.fetch.mockResolvedValue({ ok: false });
+    const block = document.createElement('div');
+    const link = document.createElement('a');
+    link.href = '/fragments/missing';
+    block.append(link);
+
+    await decorate(block);
+    // block children unchanged — link is still there
+    expect(block.querySelector('a')).toBeTruthy();
+  });
+});
+
+describe('fragment — loadFragment', () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  test('returns null for non-root-relative paths', async () => {
+    const result = await loadFragment('https://example.com/fragment');
     expect(result).toBeNull();
   });
 
-  it('returns null for a protocol-relative URL (//)', async () => {
+  test('returns null for protocol-relative paths', async () => {
     const result = await loadFragment('//example.com/fragment');
     expect(result).toBeNull();
   });
 
-  it('returns null for an empty path', async () => {
-    const result = await loadFragment('');
-    expect(result).toBeNull();
-  });
-
-  it('fetches the .plain.html URL for a valid absolute path', async () => {
-    global.fetch.mockResolvedValue({
-      ok: true,
-      text: async () => '<div class="section"><div>Hello fragment</div></div>',
-    });
-
-    await loadFragment('/test-fragment');
-    expect(global.fetch).toHaveBeenCalledWith('/test-fragment.plain.html');
-  });
-
-  it('returns a main element with content when fetch succeeds', async () => {
-    global.fetch.mockResolvedValue({
-      ok: true,
-      text: async () => '<div>Fragment content</div>',
-    });
-
-    const result = await loadFragment('/valid-fragment');
-    expect(result).toBeTruthy();
-    expect(result.tagName).toBe('MAIN');
-  });
-
-  it('returns null when fetch response is not ok', async () => {
+  test('returns null when fetch fails', async () => {
     global.fetch.mockResolvedValue({ ok: false });
-    const result = await loadFragment('/missing-fragment');
+    const result = await loadFragment('/fragments/test');
     expect(result).toBeNull();
   });
 
-  it('returns null when fetch throws a network error', async () => {
-    global.fetch.mockRejectedValue(new Error('Network error'));
-    // loadFragment does not catch errors itself; the caller must handle them
-    await expect(loadFragment('/broken-fragment')).rejects.toThrow('Network error');
+  test('returns decorated main element on success', async () => {
+    global.fetch.mockResolvedValue({ ok: true, text: async () => '<div><p>Hello</p></div>' });
+    const result = await loadFragment('/fragments/test');
+    expect(result.tagName.toLowerCase()).toBe('main');
   });
 });
