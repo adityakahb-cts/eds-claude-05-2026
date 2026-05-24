@@ -1,0 +1,13 @@
+- Header should have a logo link on the left, 2 image urls need to be present, one for light mode and one for dark mode.
+- an accessible megamenu on the center, with WCAG AA markup. It should be accessible by tab key. It should be opened as an offcanvas on mobile till xl breakpoint, starting from xl it should have a desktop view. the megamenu panel should be full width, but the items should be centered with max content width like 1200px or so. megamenu panel should have an image, a landing link with description, and a set of subnav links on the right
+- the header should have search form, which can be toggled via a search button, and a hamburger button to toggle megamenu on mobile till xl. the hamburger button should be hidden from xl and above.
+- update markup.js, header.js and respective css files. try to use global utils classnames to style the elements as much as you can. only in certain cases like logo image switch based on light or dark mode, or header height should be locally added in css. Header height should be 72px on mobile, 84px on tablet and 96px on desktop and above.
+- before making any code change, update block.md in header
+
+for keyboard accessibility, megamenu should work on click, not on hover. the height of every main link on megamenu should be equal to header height on desktop. h2 to h6 should be properly maintained on the megamenu. hamburger button must not be visible on desktop, only search button. search form submit should use same search icon with available label. search form and megamenu offcanvas should animate and should have a backdrop. light and dark themes to be considered.
+
+- the 3 lines in header.html 268, 269 and 270 are responsible to fetch the fragment html. generalize this in scripts/config with a helper function
+- footer also is calling loadFragment function, it can use the helper function to do the same
+- the helper function should return fragment.outerHTML.
+- localhost:3000 needs to run to fetch fresh fragment from da.live. after any block calls loadFragment, make a rule to create a temporary file inside tests to analyze the outerHTML. this will be needed to form the block's content model spec and its optimized MARKUP. block.md will also help for the overall logic. The rule can ask questions if needed. latest fragemnt code for header contains "open" and "close" labels and icons for search and hamburger menu, utilize them.
+- update md files

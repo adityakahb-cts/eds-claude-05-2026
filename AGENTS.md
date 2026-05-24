@@ -24,6 +24,10 @@ The repository provides the basic structure, blocks, and configuration needed to
   - The dev server runs at `http://localhost:3000` with auto-reload. Open it in playwright, puppeteer, or a browser. If none are available, ask the human to open it and give feedback.
 - Run linting before committing: `npm run lint`
 - Auto-Fix linting issues: `npm run lint:fix`
+- Run unit tests: `npm run test:unit` (Vitest, no server needed)
+- Run unit tests in watch mode: `npm run test:unit:watch`
+- Run E2E tests: `npm run test:e2e` (Playwright, requires dev server running)
+- Run all tests: `npm test`
 
 ## Project Structure
 
@@ -31,7 +35,9 @@ The repository provides the basic structure, blocks, and configuration needed to
 ├── blocks/          # Reusable content blocks
     └── {blockname}/   - Individual block directory
         ├── {blockname}.js      # Block's JavaScript
-        └── {blockname}.css     # Block's styles
+        ├── {blockname}.css     # Block's styles
+        ├── {blockname}.test.js # Vitest unit tests
+        └── block.md            # Block documentation and content model for AI agents
 ├── styles/          # Global styles and CSS
     ├── styles.css          # Minimal global styling and layout for your website required for LCP
     ├── lazy-styles.css     # Additional global styling and layout for below the fold/post LCP content
@@ -40,11 +46,32 @@ The repository provides the basic structure, blocks, and configuration needed to
     ├── aem.js           # Core AEM Library for Edge Delivery page decoration logic (NEVER MODIFY THIS FILE)
     ├── scripts.js       # Global JavaScript utilities, main entry point for page decoration
     └── delayed.js       # Delayed functionality such as martech loading
+├── tests/
+    ├── e2e/             # Playwright end-to-end tests (one spec per block + page-load.spec.js)
+    └── unit/            # Shared test utilities and jsdom setup
+├── drafts/          # Static HTML test pages for local dev (served via aem up --html-folder drafts)
+├── .claude/
+    ├── settings.json    # Claude Code hooks (format-on-save, .env protection)
+    └── commands/
+        └── new-block.md # /new-block slash command — scaffolds all block files
+├── component-models.json  # da.live content model definitions for all blocks
+├── vitest.config.js       # Unit test runner config
+├── playwright.config.js   # E2E test runner config
 ├── fonts/           # Web fonts
 ├── icons/           # SVG icons
 ├── head.html        # Global HTML head content
 └── 404.html         # Custom 404 page
 ```
+
+### Current Blocks
+
+| Block      | Purpose                                         |
+| ---------- | ----------------------------------------------- |
+| `header`   | Site navigation, loaded from `/nav` fragment    |
+| `footer`   | Site footer, loaded from `/footer` fragment     |
+| `fragment` | Inline content inclusion from another page path |
+
+> Use `/new-block <name>` to scaffold a new block with all required files.
 
 ## Code Style Guidelines
 

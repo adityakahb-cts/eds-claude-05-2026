@@ -9,13 +9,27 @@ const compat = new FlatCompat({
 
 export default [
   {
-    ignores: ['helix-importer-ui/**', '**/*.min.js'],
+    ignores: [
+      'helix-importer-ui/**',
+      '**/*.min.js',
+      '__extras/**',
+      'scripts/aem.js',
+      'scripts/scripts.js',
+      'scripts/delayed.js',
+      'scripts/vendor/**',
+    ],
   },
   ...compat.extends('airbnb-base', 'prettier'),
   {
-    files: ['eslint.config.js'],
+    files: ['eslint.config.js', 'vitest.config.js', 'playwright.config.js', '**/*.test.js', 'tests/**/*.js'],
+    languageOptions: {
+      globals: {
+        ...globals.jest,
+      },
+    },
     rules: {
       'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
+      'import/no-unresolved': 'off',
     },
   },
   {

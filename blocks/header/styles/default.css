@@ -1,0 +1,451 @@
+/* ── Header height — drives <header> spacer via globals.css `header { height: var(--nav-height) }` */
+:root {
+  --nav-height: 72px;
+}
+
+/* ── Header bar ──────────────────────────────────────────────────────────── */
+header .siteheader-bar {
+  height: var(--nav-height);
+  background-color: var(--color-page-bg);
+  border-bottom: 0.0625rem solid var(--color-border);
+}
+
+header .siteheader-inner {
+  height: 100%;
+  max-width: 1432px;
+  padding-inline: var(--spacing-3);
+  margin-inline: auto;
+}
+
+/* ── Logo ────────────────────────────────────────────────────────────────── */
+header .siteheader-logo img {
+  height: 2rem;
+  width: auto;
+  display: block;
+}
+
+/* Dark-mode logo swap — system preference */
+header .siteheader-logo-dark {
+  display: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  header .siteheader-logo-dark {
+    display: block;
+  }
+
+  header .siteheader-logo-light {
+    display: none;
+  }
+}
+
+/* Dark-mode logo swap — explicit data-eds-theme override */
+[data-eds-theme='dark'] header .siteheader-logo-dark {
+  display: block;
+}
+
+[data-eds-theme='dark'] header .siteheader-logo-light {
+  display: none;
+}
+
+[data-eds-theme='light'] header .siteheader-logo-dark {
+  display: none;
+}
+
+[data-eds-theme='light'] header .siteheader-logo-light {
+  display: block;
+}
+
+/* ── Desktop nav link ────────────────────────────────────────────────────── */
+header .siteheader-navlink {
+  padding: 0.5rem 0.75rem;
+  color: var(--color-text);
+  text-decoration: none;
+  border-radius: var(--border-radius-s);
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease;
+}
+
+header .siteheader-navlink:hover {
+  color: var(--color-primary);
+  background-color: var(--color-surface);
+}
+
+header .siteheader-navlink:focus-visible {
+  outline: 0.1875rem solid var(--color-primary-focus);
+  outline-offset: 0.125rem;
+}
+
+/* ── Desktop nav chevron arrow ───────────────────────────────────────────── */
+header .siteheader-nav-arrow {
+  display: inline-flex;
+  align-items: center;
+  line-height: 1;
+  font-size: 0.75rem;
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+}
+
+header .siteheader-navlink[aria-expanded='true'] .siteheader-nav-arrow {
+  transform: rotate(180deg);
+}
+
+/* ── Search toggle & hamburger icon buttons ──────────────────────────────── */
+header .siteheader-search-toggle,
+header .siteheader-hamburger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: var(--border-radius-s);
+  cursor: pointer;
+  color: var(--color-text);
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease;
+}
+
+header .siteheader-search-toggle:hover,
+header .siteheader-hamburger:hover {
+  color: var(--color-primary);
+  background-color: var(--color-surface);
+}
+
+header .siteheader-search-toggle:focus-visible,
+header .siteheader-hamburger:focus-visible {
+  outline: 0.1875rem solid var(--color-primary-focus);
+  outline-offset: 0.125rem;
+}
+
+/* ── Toggle button open/close icon swap ─────────────────────────────────── */
+header .siteheader-icon-close {
+  display: none;
+}
+
+header .siteheader-search-toggle[aria-expanded='true'] .siteheader-icon-open,
+header .siteheader-hamburger[aria-expanded='true'] .siteheader-icon-open {
+  display: none;
+}
+
+header .siteheader-search-toggle[aria-expanded='true'] .siteheader-icon-close,
+header .siteheader-hamburger[aria-expanded='true'] .siteheader-icon-close {
+  display: inline-flex;
+}
+
+/* ── Megamenu panel — hidden by default on all breakpoints ──────────────── */
+header .siteheader-megamenu {
+  top: 100%;
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+  background-color: var(--color-page-bg);
+  border-top: 0.0625rem solid var(--color-border);
+  box-shadow: 0 0.5rem 2rem rgb(0 0 0 / 12%);
+  transition:
+    opacity 0.2s ease,
+    visibility 0.2s ease;
+}
+
+/* ── Megamenu inner — centred at 1200 px max-width ───────────────────────── */
+header .siteheader-megamenu-inner {
+  max-width: 1200px;
+  margin-inline: auto;
+  padding: var(--spacing-4) var(--spacing-3);
+}
+
+/* ── Megamenu image ───────────────────────────────────────────────────────── */
+header .siteheader-megamenu-image img {
+  width: 100%;
+  height: 12rem;
+  object-fit: cover;
+  border-radius: var(--border-radius-m);
+  display: block;
+}
+
+/* ── Megamenu heading styles (h2–h6 all normalised to a compact display size) */
+header .siteheader-megamenu-landing h2,
+header .siteheader-megamenu-landing h3 {
+  margin-bottom: 0.5rem;
+  font-size: var(--font-size-h5, 1.125rem);
+}
+
+header .siteheader-megamenu-landing h4 {
+  margin-bottom: 0.5rem;
+  font-size: var(--font-size-h6, 1rem);
+}
+
+header .siteheader-megamenu-landing h5,
+header .siteheader-megamenu-landing h6 {
+  margin-bottom: 0.375rem;
+  font-size: var(--font-size-p, 0.9375rem);
+}
+
+header .siteheader-megamenu-landing p {
+  color: var(--color-text-muted);
+  font-size: 0.875rem;
+  margin-block: 0.25rem 0;
+}
+
+/* ── Megamenu subnav list items ──────────────────────────────────────────── */
+header .siteheader-megamenu-subnavs li {
+  padding-block: 0.125rem;
+}
+
+/* ── All content link base styles (megamenu + mobile) ───────────────────────
+   All plain `a` rules MUST appear before any `a:hover` rule of equal or higher
+   specificity to satisfy the no-descending-specificity lint rule.             */
+header .siteheader-megamenu-landing a {
+  color: var(--color-text);
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+header .siteheader-megamenu-subnavs a {
+  color: var(--color-text);
+  text-decoration: none;
+  display: block;
+  padding-block: 0.25rem;
+  transition: color 0.2s ease;
+}
+
+header .siteheader-mobile-submenu a {
+  display: block;
+  padding-block: var(--spacing-2);
+  color: var(--color-text);
+  text-decoration: none;
+  font-size: var(--font-size-p);
+  transition: color 0.2s ease;
+}
+
+header .siteheader-mobile-landing a {
+  font-weight: 700;
+}
+
+header .siteheader-mobile-sublink a {
+  color: var(--color-text-muted);
+}
+
+/* ── Content link hover / focus states (all sections) ────────────────────── */
+header .siteheader-megamenu-landing a:hover,
+header .siteheader-megamenu-subnavs a:hover {
+  color: var(--color-primary);
+  text-decoration: underline;
+}
+
+header .siteheader-megamenu-landing a:focus-visible,
+header .siteheader-megamenu-subnavs a:focus-visible {
+  outline: 0.1875rem solid var(--color-primary-focus);
+  outline-offset: 0.125rem;
+  border-radius: 0.125rem;
+}
+
+/* ── Backdrop (shared by search panel, mobile nav, and desktop megamenu) ──── */
+header .siteheader-backdrop {
+  position: fixed;
+  inset: 0;
+  top: var(--nav-height);
+  background: rgb(0 0 0 / 40%);
+  opacity: 0;
+  pointer-events: none;
+  z-index: calc(var(--z-fixed) - 1);
+  transition: opacity 0.25s ease;
+}
+
+header .siteheader-backdrop.is-active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* ── Search panel ────────────────────────────────────────────────────────── */
+header .siteheader-search {
+  position: fixed;
+  top: var(--nav-height);
+  left: 0;
+  width: 100%;
+  z-index: var(--z-fixed);
+  background-color: var(--color-page-bg);
+  border-bottom: 0.0625rem solid var(--color-border);
+  box-shadow: 0 0.25rem 1rem rgb(0 0 0 / 8%);
+  opacity: 0;
+  transform: translateY(-0.5rem);
+  transition:
+    opacity 0.25s ease,
+    transform 0.25s ease;
+}
+
+header .siteheader-search.is-open {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+header .siteheader-search-inner {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  max-width: 1432px;
+  margin-inline: auto;
+  padding: var(--spacing-3);
+}
+
+header .siteheader-search-input {
+  height: 2.75rem;
+  padding-inline: var(--spacing-3);
+  border: 0.0625rem solid var(--color-border);
+  border-radius: var(--border-radius-pill);
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  font-size: var(--font-size-p);
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+header .siteheader-search-input:focus {
+  border-color: var(--color-primary);
+  outline: 0.1875rem solid var(--color-primary-focus);
+  outline-offset: 0.125rem;
+}
+
+/* ── Search submit button (icon-only, matching the search toggle style) ───── */
+header .siteheader-search-submit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  flex-shrink: 0;
+  padding: 0;
+  background: var(--color-primary);
+  border: none;
+  border-radius: var(--border-radius-pill);
+  cursor: pointer;
+  color: var(--color-primary-contrast, #fff);
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+header .siteheader-search-submit:hover {
+  background: var(--color-primary-hover, var(--color-primary));
+  color: var(--color-primary-contrast, #fff);
+}
+
+header .siteheader-search-submit:focus-visible {
+  outline: 0.1875rem solid var(--color-primary-focus);
+  outline-offset: 0.125rem;
+}
+
+/* ── Mobile offcanvas nav ────────────────────────────────────────────────── */
+header .siteheader-mobilenav {
+  position: fixed;
+  top: var(--nav-height);
+  left: 0;
+  width: 100%;
+  height: calc(100dvh - var(--nav-height));
+  z-index: var(--z-fixed);
+  background-color: var(--color-page-bg);
+  overflow-y: auto;
+  border-top: 0.0625rem solid var(--color-border);
+  opacity: 0;
+  transform: translateY(-0.75rem);
+  transition:
+    opacity 0.25s ease,
+    transform 0.25s ease;
+}
+
+header .siteheader-mobilenav.is-open {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── Reduced motion — disable all header transitions ─────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  header .siteheader-backdrop,
+  header .siteheader-search,
+  header .siteheader-mobilenav,
+  header .siteheader-megamenu,
+  header .siteheader-nav-arrow,
+  header .siteheader-mobile-arrow,
+  header .siteheader-navlink,
+  header .siteheader-search-toggle,
+  header .siteheader-hamburger,
+  header .siteheader-search-input,
+  header .siteheader-search-submit,
+  header .siteheader-megamenu-landing a,
+  header .siteheader-megamenu-subnavs a,
+  header .siteheader-mobile-submenu a,
+  header .siteheader-mobile-link,
+  header .siteheader-mobile-toggle {
+    transition-duration: 0s;
+  }
+}
+
+header .siteheader-mobile-item {
+  border-bottom: 0.0625rem solid var(--color-border);
+}
+
+header .siteheader-mobile-link,
+header .siteheader-mobile-toggle {
+  width: 100%;
+  padding: var(--spacing-3);
+  color: var(--color-text);
+  background: transparent;
+  border: none;
+  font-family: inherit;
+  font-size: var(--font-size-p);
+  text-align: start;
+  cursor: pointer;
+  text-decoration: none;
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease;
+}
+
+header .siteheader-mobile-link:hover,
+header .siteheader-mobile-toggle:hover {
+  color: var(--color-primary);
+  background-color: var(--color-surface);
+}
+
+header .siteheader-mobile-link:focus-visible,
+header .siteheader-mobile-toggle:focus-visible {
+  outline: 0.1875rem solid var(--color-primary-focus);
+  outline-offset: -0.125rem;
+}
+
+/* ── Mobile chevron arrow ────────────────────────────────────────────────── */
+header .siteheader-mobile-arrow {
+  display: inline-flex;
+  align-items: center;
+  line-height: 1;
+  font-size: 0.75rem;
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+}
+
+header .siteheader-mobile-toggle[aria-expanded='true'] .siteheader-mobile-arrow {
+  transform: rotate(180deg);
+}
+
+/* ── Mobile submenu (accordion panel) ───────────────────────────────────── */
+header .siteheader-mobile-submenu {
+  padding: 0 var(--spacing-3) var(--spacing-3);
+  background-color: var(--color-surface);
+}
+
+/* ── Mobile submenu link hover / focus states ────────────────────────────── */
+header .siteheader-mobile-submenu a:hover {
+  color: var(--color-primary);
+}
+
+header .siteheader-mobile-submenu a:focus-visible {
+  outline: 0.1875rem solid var(--color-primary-focus);
+  outline-offset: 0.125rem;
+  border-radius: 0.125rem;
+}

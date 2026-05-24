@@ -1,0 +1,269 @@
+/* ─── Globals — body, layout chrome, blocks, images, icons, buttons ─────── */
+
+/*
+ * ── Skip to main content (WCAG 2.4.1 Bypass Blocks) ──────────────────────
+ * Visually hidden until focused. Place <a class="skip-link" href="#main-content">
+ * Skip to main content</a> as the very first element inside <body>.
+ * The matching landmark must have id="main-content" on <main>.
+ */
+.skip-link {
+  position: absolute;
+  inset-block-start: var(--spacing-3);
+  inset-inline-start: var(--spacing-3);
+  z-index: var(--z-toast);
+  padding: var(--spacing-2) var(--spacing-4);
+  border-radius: var(--border-radius-m);
+  background-color: var(--link-color);
+  color: white;
+  font-weight: 600;
+  font-size: var(--font-size-p);
+  line-height: 1.5;
+  text-decoration: none;
+  white-space: nowrap;
+  transform: translateY(calc(-100% - var(--spacing-3) * 2));
+  transition: transform var(--transition-base);
+}
+
+/* WCAG 2.4.13 — focus ring must be visible and meet 3:1 contrast */
+.skip-link:focus-visible {
+  transform: translateY(0);
+  outline: 2px solid white;
+  outline-offset: 2px;
+}
+
+/* ── Body ── */
+body {
+  /* display: none; */
+  margin: 0;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  font-family: var(--body-font-family);
+  font-size: var(--font-size-p);
+  line-height: 1.6;
+}
+
+body.appear {
+  display: block;
+}
+
+/* ── Header / footer visibility ── */
+header {
+  height: var(--nav-height);
+}
+
+header .header,
+footer .footer {
+  visibility: hidden;
+}
+
+header .header[data-block-status='loaded'],
+footer .footer[data-block-status='loaded'] {
+  visibility: visible;
+}
+
+/* ── Main fallback layout ── */
+main > div {
+  margin: 40px 16px;
+}
+
+/* ── Images ── */
+main img {
+  max-width: 100%;
+  width: auto;
+  height: auto;
+}
+
+/* ── Icons ── */
+.icon {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+}
+
+.icon img,
+.icon svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/*
+ * ── Legacy button system (.button class) ──────────────────────────────────
+ * Scoped to :not(.btn) so the modern .btn system in buttons.css is never
+ * affected by these rules. This prevents cascade conflicts that would make
+ * all .btn theme and size variants look identical.
+ */
+a.button:any-link,
+button:not(.btn) {
+  box-sizing: border-box;
+  display: inline-block;
+  max-width: 100%;
+  margin-block: 12px;
+  border: 2px solid transparent;
+  border-radius: var(--border-radius-pill);
+  min-height: 44px;
+  padding: 0.5em 1.2em;
+  font-family: var(--body-font-family);
+  font-size: var(--font-size-p);
+  font-style: normal;
+  font-weight: 500;
+  line-height: 1.5;
+  text-align: center;
+  text-decoration: none;
+  background-color: var(--link-color);
+  color: var(--background-color);
+  cursor: pointer;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  transition:
+    background-color var(--transition-base),
+    border-color var(--transition-base);
+}
+
+a.button:hover,
+a.button:focus,
+button:not(.btn):hover,
+button:not(.btn):focus {
+  background-color: var(--link-hover-color);
+  cursor: pointer;
+}
+
+a.button:focus-visible,
+button:not(.btn):focus-visible {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
+}
+
+button:not(.btn):disabled,
+button:not(.btn):disabled:hover {
+  background-color: var(--surface-color);
+  color: var(--muted-color);
+  cursor: not-allowed;
+}
+
+a.button.secondary,
+button:not(.btn).secondary {
+  background-color: transparent;
+  border-color: currentcolor;
+  color: var(--text-color);
+}
+
+a.button.secondary:hover,
+button:not(.btn).secondary:hover {
+  background-color: var(--surface-color);
+}
+
+/* ── Sections ── */
+main > .section {
+  margin-block: 40px;
+}
+
+main > .section > div {
+  max-width: 1200px;
+  margin-inline: auto;
+  padding-inline: 24px;
+}
+
+main > .section:first-of-type {
+  margin-top: 0;
+}
+
+@media (width >= 992px) {
+  main > .section > div {
+    padding-inline: 32px;
+  }
+}
+
+/* ── Alert component ── */
+
+/*
+ * Usage:
+ *   <div class="alert alert--warning" role="alert">Watch out!</div>
+ *   <div class="alert alert--success"><p>Changes saved.</p></div>
+ *
+ *   Via regen directive:
+ *   {{regen:start;element:alert;theme:danger;role:alert}}Message{{regen:end}}
+ *
+ * The 4 px inline-start border provides a semantic colour cue that does not
+ * rely on colour alone (WCAG 1.4.1). The subtle background ensures ≥ 3:1
+ * non-text contrast against the page background (WCAG 1.4.11).
+ */
+.alert {
+  --_alert-bg: var(--color-primary-subtle);
+  --_alert-border: var(--color-primary-border);
+
+  display: block;
+  padding: var(--spacing-3) var(--spacing-4);
+  border: 1px solid var(--_alert-border);
+  border-inline-start-width: 4px;
+  border-radius: var(--border-radius-m);
+  background-color: var(--_alert-bg);
+  color: var(--color-text);
+  font-size: var(--font-size-p);
+  line-height: 1.5;
+}
+
+.alert > p:first-child {
+  margin-block-start: 0;
+}
+
+.alert > p:last-child {
+  margin-block-end: 0;
+}
+
+/* ── Alert colour variants ── */
+.alert--primary {
+  --_alert-bg: var(--color-primary-subtle);
+  --_alert-border: var(--color-primary-border);
+}
+
+.alert--secondary {
+  --_alert-bg: var(--color-secondary-subtle);
+  --_alert-border: var(--color-secondary-border);
+}
+
+.alert--tertiary {
+  --_alert-bg: var(--color-tertiary-subtle);
+  --_alert-border: var(--color-tertiary-border);
+}
+
+.alert--danger {
+  --_alert-bg: var(--color-danger-subtle);
+  --_alert-border: var(--color-danger-border);
+}
+
+.alert--success {
+  --_alert-bg: var(--color-success-subtle);
+  --_alert-border: var(--color-success-border);
+}
+
+.alert--info {
+  --_alert-bg: var(--color-info-subtle);
+  --_alert-border: var(--color-info-border);
+}
+
+.alert--warning {
+  --_alert-bg: var(--color-warning-subtle);
+  --_alert-border: var(--color-warning-border);
+}
+
+/* ── Alert pilled shape (regen radius:pilled) ── */
+.alert--pilled {
+  border-radius: var(--border-radius-pill);
+  border-inline-start-width: 1px;
+}
+
+/* ── Image pilled shape (regen element:image radius:pilled) ── */
+img.img--pilled {
+  border-radius: var(--border-radius-pill);
+  overflow: hidden;
+}
+
+/* section metadata variants */
+main .section.light,
+main .section.highlight {
+  background-color: var(--light-color);
+  margin-block: 0;
+  padding-block: 40px;
+}

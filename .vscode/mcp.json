@@ -1,0 +1,7 @@
+{
+  "mcpServers": {
+    "da-live-admin": {
+      "url": "https://mcp.adobeaemcloud.com/adobe/mcp/da"
+    }
+  }
+}

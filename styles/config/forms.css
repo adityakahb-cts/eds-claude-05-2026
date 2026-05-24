@@ -1,0 +1,204 @@
+/* ─── Forms ──────────────────────────────────────────────────────────────── */
+
+/* ── Base inputs ── */
+input,
+textarea,
+select,
+button {
+  font: inherit;
+}
+
+input:not([type='checkbox'], [type='radio']),
+textarea,
+select {
+  display: block;
+  width: 100%;
+
+  /*
+   * WCAG 2.5.8 Target Size — padding ensures the control is at least 44 px
+   * tall at the base font size (line-height 1.5 × 16px = 24px + 16px padding).
+   * WCAG 1.4.12 Text Spacing — line-height: 1.5 is the minimum required.
+   */
+  min-height: 44px;
+  padding: var(--spacing-2) var(--spacing-3);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-m);
+  background-color: var(--background-color);
+  color: var(--text-color);
+  font-size: var(--font-size-p);
+  line-height: 1.5;
+  transition:
+    border-color var(--transition-base),
+    box-shadow var(--transition-base);
+  appearance: none;
+}
+
+/*
+ * WCAG 2.4.13 Focus Appearance — 2 px minimum outline, ≥ 3:1 contrast.
+ * We use both a border-color change and an outer box-shadow so the ring is
+ * visible on both light and dark backgrounds.
+ */
+input:not([type='checkbox'], [type='radio']):focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 1px;
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 3px color-mix(in oklch, var(--accent-color) 25%, transparent);
+}
+
+/* keep a basic focus style for browsers that don't support :focus-visible */
+input:not([type='checkbox'], [type='radio']):focus,
+textarea:focus,
+select:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 3px color-mix(in oklch, var(--accent-color) 25%, transparent);
+}
+
+input:disabled,
+textarea:disabled,
+select:disabled {
+  background-color: var(--surface-color);
+  color: var(--muted-color);
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+textarea {
+  min-height: 7rem;
+  resize: vertical;
+}
+
+select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23505050' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right var(--spacing-3) center;
+  padding-inline-end: calc(var(--spacing-3) * 2.5);
+}
+
+/* ── Checkbox and radio ── */
+input[type='checkbox'],
+input[type='radio'] {
+  /*
+   * WCAG 2.5.8 Target Size (Minimum, Level AA) — 24 × 24 CSS px minimum.
+   * 1.5rem = 24 px at the default 16 px root font size.
+   */
+  width: 1.5rem;
+  height: 1.5rem;
+  margin: 0;
+  flex-shrink: 0;
+  vertical-align: middle;
+  cursor: pointer;
+  accent-color: var(--accent-color);
+}
+
+/* ── Labels ── */
+label {
+  display: inline-block;
+  margin-bottom: var(--spacing-1);
+  font-weight: 500;
+  cursor: pointer;
+}
+
+/* ── Form group ── */
+.form-group {
+  margin-bottom: var(--spacing-3);
+}
+
+.form-group label {
+  display: block;
+}
+
+/* ── Help text ── */
+.form-text {
+  display: block;
+  margin-top: var(--spacing-1);
+  font-size: var(--font-size-small);
+  color: var(--muted-color);
+}
+
+/* ── Validation states ── */
+.is-valid input,
+.is-valid textarea,
+.is-valid select,
+input.is-valid,
+textarea.is-valid,
+select.is-valid {
+  border-color: var(--color-success);
+}
+
+.is-invalid input,
+.is-invalid textarea,
+.is-invalid select,
+input.is-invalid,
+textarea.is-invalid,
+select.is-invalid {
+  border-color: var(--color-danger);
+}
+
+.valid-feedback,
+.invalid-feedback {
+  display: none;
+  margin-top: var(--spacing-1);
+  font-size: var(--font-size-small);
+}
+
+.valid-feedback {
+  color: var(--color-success);
+}
+
+.invalid-feedback {
+  color: var(--color-danger);
+}
+
+.is-valid .valid-feedback,
+.is-invalid .invalid-feedback,
+input.is-valid ~ .valid-feedback,
+input.is-invalid ~ .invalid-feedback {
+  display: block;
+}
+
+/* ── Fieldset / Legend ── */
+fieldset {
+  margin-bottom: var(--spacing-3);
+}
+
+legend {
+  display: block;
+  width: 100%;
+  margin-bottom: var(--spacing-2);
+  font-size: var(--font-size-p);
+  font-weight: 600;
+}
+
+/* ── Range ── */
+input[type='range'] {
+  display: block;
+  width: 100%;
+  appearance: none;
+  height: 0.5rem;
+  border-radius: var(--border-radius-pill);
+  background-color: var(--border-color);
+  cursor: pointer;
+  padding: 0;
+  border: none;
+}
+
+input[type='range']::-webkit-slider-thumb {
+  appearance: none;
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: var(--border-radius-circle);
+  background-color: var(--accent-color);
+}
+
+input[type='range']:focus {
+  box-shadow: none;
+  outline: none;
+}
+
+input[type='range']:focus-visible {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
+}
