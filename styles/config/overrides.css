@@ -1,0 +1,125 @@
+/*
+ * overrides.css — Project-level CSS variable overrides
+ *
+ * This file is imported into the `overrides` cascade layer, which is the
+ * last (highest-priority) layer declared in styles.css. Any custom property
+ * defined here wins over the defaults in config/colors.css, config/themes.css,
+ * and the :root block in styles.css — no `!important` needed.
+ *
+ * HOW TO USE
+ * ──────────────────────────────────────────────────────────────────────────
+ * 1. Uncomment a token group below and change the value.
+ * 2. Run `npm run lint` and `npx -y @adobe/aem-cli up` to preview live.
+ * 3. Both light and dark variants of a token must be updated when you change
+ *    semantic colors — the dark-mode block shows the correct structure.
+ *
+ * AVAILABLE TOKEN GROUPS (from styles.css / config/themes.css)
+ * ──────────────────────────────────────────────────────────────────────────
+ *   Design tokens  — breakpoints, spacing, border-radius, shadows,
+ *                    transitions, z-index, container widths, grid, nav height
+ *   Font tokens    — --body-font-family, --heading-font-family,
+ *                    --font-size-{display1-6}, --font-size-{h1-h6},
+ *                    --font-size-{intro|p|small}
+ *   Semantic color — --color-{state} and its six sub-tokens per state:
+ *                    -hover, -active, -text, -subtle, -border, -focus
+ *                    States: primary · secondary · tertiary ·
+ *                            danger · success · info · warning
+ *   Legacy bridge  — --background-color, --text-color, --link-color, etc.
+ *                    (point to semantic tokens; override semantics, not these)
+ *
+ * PALETTE REFERENCE
+ * ──────────────────────────────────────────────────────────────────────────
+ * Raw palette variables (--color-blue-600, --color-red-300, …) are defined
+ * in config/colors.css. You can reuse them as values here, e.g.:
+ *
+ *   --color-primary: var(--color-violet-600);
+ *
+ * ACCESSIBILITY RULES TO KEEP IN MIND
+ * ──────────────────────────────────────────────────────────────────────────
+ *   • Filled-bg / text pairs must achieve ≥4.5:1 contrast (WCAG AA).
+ *   • Hover and active shades must achieve ≥3:1 against the page background.
+ *   • Focus rings must be 3px solid and ≥3:1 against the adjacent background.
+ *   • See config/themes.css for the existing contrast ratios to use as a guide.
+ */
+
+/* ─── Light mode overrides ───────────────────────────────────────────────── */
+:root {
+  /* ── Brand / primary color ─────────────────────────────────────────────
+   * Change the primary palette entry point here; all derived tokens
+   * (-hover, -active, -text, …) should be updated together.
+   *
+   * Example — switch primary from blue to violet:
+   *   --color-primary:        var(--color-violet-600);
+   *   --color-primary-hover:  var(--color-violet-700);
+   *   --color-primary-active: var(--color-violet-800);
+   *   --color-primary-text:   var(--color-neutral-0);
+   *   --color-primary-subtle: var(--color-violet-100);
+   *   --color-primary-border: var(--color-violet-400);
+   *   --color-primary-focus:  var(--color-violet-700);
+   */
+
+  /* ── Typography ────────────────────────────────────────────────────────
+   * Example — switch to a different font stack:
+   *   --body-font-family:    'Inter', sans-serif;
+   *   --heading-font-family: 'Poppins', sans-serif;
+   */
+
+  /* ── Spacing ────────────────────────────────────────────────────────────
+   * Example — tighten the base spacing scale:
+   *   --spacing-3: 0.75rem;   (12px instead of 16px)
+   */
+
+  /* ── Border radius ──────────────────────────────────────────────────────
+   * Example — square off all corners:
+   *   --border-radius-s: 0;
+   *   --border-radius-m: 0;
+   *   --border-radius-l: 0;
+   */
+
+  /* ── Shadows ────────────────────────────────────────────────────────────
+   * Example — remove shadows entirely:
+   *   --shadow-s: none;
+   *   --shadow-m: none;
+   *   --shadow-l: none;
+   */
+
+  /* ── Transitions ────────────────────────────────────────────────────────
+   * Example — slow down all transitions for debugging:
+   *   --transition-speed: 500ms;
+   */
+
+  /* ── Navigation height ──────────────────────────────────────────────────
+   * Example:
+   *   --nav-height: 80px;
+   */
+}
+
+/* ─── Dark mode overrides ────────────────────────────────────────────────── */
+
+/*
+ * Mirror any semantic color changes made above for dark mode.
+ * Both the @media block (system preference) and the [data-eds-theme="dark"]
+ * attribute selector must be updated to keep the two paths in sync.
+ */
+
+/* @media (prefers-color-scheme: dark) {
+  :root {
+    --color-primary:        var(--color-violet-300);
+    --color-primary-hover:  var(--color-violet-200);
+    --color-primary-active: var(--color-violet-100);
+    --color-primary-text:   var(--color-neutral-900);
+    --color-primary-subtle: var(--color-violet-900);
+    --color-primary-border: var(--color-violet-500);
+    --color-primary-focus:  var(--color-violet-200);
+  }
+} */
+
+/* [data-eds-theme="dark"] {
+  --color-primary:        var(--color-violet-300);
+  --color-primary-hover:  var(--color-violet-200);
+  --color-primary-active: var(--color-violet-100);
+  --color-primary-text:   var(--color-neutral-900);
+  --color-primary-subtle: var(--color-violet-900);
+  --color-primary-border: var(--color-violet-500);
+  --color-primary-focus:  var(--color-violet-200);
+} */

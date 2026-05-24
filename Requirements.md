@@ -21,6 +21,10 @@
 1. Use "**extras/eds-claude/aem.js", "**extras/eds-claude/scripts.js", "**extras/eds-claude/delayed.js", "**extras/eds-claude/common/utils.js" and "\_\_extras/eds-claude/common/data-parser.js" files to enhance "scripts/aem.js", "scripts/scripts.js" and "scripts/delayed.js". If needed, create extra JS files inside "scripts/config" folder.
 1. Under "\_\_extras", more md files are present for larger analysis and implementation.
 1. Embla carousel and Lenis scroll library are in vendor folder for global implementation.
+1. da.live mcp server is configured for specific tools. Every authored block must be in sync with its respective content model in the codebase.
+1. Claude to suggest best mcps, plugins, skills, etc. to achieve the best results.
+1. Lighthouse score target is 100 for mobile and desktop viewports.
+1. Analyze styles folder and respective CSS files inside blocks. Check the CSS imports, variables and other related architecture. This must be followed.
 
 ## Block implementation
 
@@ -28,10 +32,12 @@
    a. `{blockname}.js`
    b. `{blockname}.css`
    c. `{blockname}.spec.js`
+   d. `{blockname}.test.js`
    d. `{blockname}.model.js`
    e. `{blockname}.md`
 1. `{blockname}.js` and `{blockname}.css` are the default files required by edge delivery services.
-1. `{blockname}.spec.js` is the vitest file for unit testing the `{blockname}.js` file.
+1. `{blockname}.test.js` is the vitest file for unit testing the `{blockname}.js` file.
+1. `{blockname}.spec.js` is the playwright e2e test file testing the `{blockname}.js` file.
 1. `{blockname}.model.js` is the helper file containing the content model and markup of the `{blockname}`, both will be exported to `{blockname}.js`. This content model should match with the block defined in the da.live document file. Both content model and markup can be used for unit testing. Markup can be used for block's DOM structure, instead of using "createElement", "append" and "appendTo" etc. methods.
 1. Again, innerHTML must not be used for the block markup. Refer to the "html" function defined in "\_\_extras/eds-claude/aem.js".
 1. `{blockname}.md` is the block definition file containing all the business requirements and usage of the `{blockname}`.

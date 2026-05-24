@@ -1,0 +1,5 @@
+@media (width >= 992px) {
+  footer .footer > div {
+    padding: 40px 32px 24px;
+  }
+}

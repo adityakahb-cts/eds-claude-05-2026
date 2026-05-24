@@ -1,0 +1,914 @@
+/*
+ * buttons.css — Button system + border & ring utilities
+ * Imported into the `utilities` cascade layer (after utilities.css) so that
+ * semantic border-colour utilities override the .border shorthand by source order
+ * within the same layer.
+ *
+ * ── Button usage ────────────────────────────────────────────────────────────
+ *
+ *   Element:  <button class="btn"> or <a href="#" class="btn">
+ *
+ *   Colour variant (default = primary):
+ *     .btn--primary | .btn--secondary | .btn--tertiary
+ *     .btn--danger  | .btn--success   | .btn--info   | .btn--warning
+ *
+ *   Fill (default = solid):
+ *     (none)         solid filled background
+ *     .btn--outlined transparent background, coloured border + text
+ *
+ *   Shape (default = rounded):
+ *     (none)        --border-radius-m corners
+ *     .btn--pilled  --border-radius-pill (capsule)
+ *
+ *   Size (default = md):
+ *     .btn--sm | (none) | .btn--lg | .btn--xl
+ *
+ *   Icons — place .btn__icon inside the button (aria-hidden="true" required):
+ *     .btn--icon-left   icon precedes label
+ *     .btn--icon-right  icon follows label
+ *     (both classes)    icons on both sides
+ *     .btn--icon-only   square icon-only; requires aria-label on the button
+ *
+ *   Group:
+ *     .btn-group            flush row; borders collapse; end-caps rounded
+ *     .btn-group--pilled    pill-shaped end-caps on first/last button
+ *
+ *   Link as button:
+ *     <a href="/path" class="btn btn--primary btn--lg">Go</a>
+ *
+ * ── WCAG compliance ──────────────────────────────────────────────────────────
+ *   2.5.8   Target Size (Minimum) — sm min-height 32 px; all sizes exceed 24 px.
+ *   1.4.3   Text Contrast — all solid + outlined pairs verified ≥ 4.5:1.
+ *   1.4.11  Non-text Contrast — hover/active via semantic -hover/-active tokens
+ *           which already meet ≥ 3:1 against the page background.
+ *   2.4.11  Focus Appearance — 3 px solid ring, offset 3 px, ≥ 3:1 on page bg.
+ *   2.4.13  Enhanced Focus — ring colour tokens chosen at ≥ 4.5:1 (blue-700 etc.)
+ *   1.4.12  Text Spacing — min-height + padding-block: 0 prevents clipping when
+ *           users force line-height up to 1.5×.
+ *
+ *   Warning outlined exception:
+ *     --color-warning (amber-600) is only 3.3:1 on white — below AA text threshold.
+ *     --_btn-outlined-text is overridden to --color-warning-hover (amber-700 = 5.5:1
+ *     light mode ✓ / amber-300 dark mode ✓ via semantic token resolution).
+ */
+
+/* ─── Button design tokens ───────────────────────────────────────────────── */
+
+:root {
+  /* ── min-height per size (WCAG 2.5.8 — all exceed the 24 px floor) ── */
+  --btn-height-sm: 2rem; /*  32 px */
+  --btn-height-md: 2.5rem; /*  40 px */
+  --btn-height-lg: 3rem; /*  48 px */
+  --btn-height-xl: 3.5rem; /*  56 px */
+
+  /* ── font size per size ── */
+  --btn-font-size-sm: 0.75rem; /* 12 px */
+  --btn-font-size-md: 0.875rem; /* 14 px */
+  --btn-font-size-lg: 1rem; /* 16 px */
+  --btn-font-size-xl: 1.125rem; /* 18 px */
+
+  /* ── horizontal (inline) padding per size ── */
+  --btn-px-sm: 0.75rem; /* 12 px */
+  --btn-px-md: 1.25rem; /* 20 px */
+  --btn-px-lg: 1.5rem; /* 24 px */
+  --btn-px-xl: 2rem; /* 32 px */
+
+  /* ── icon dimensions per size ── */
+  --btn-icon-sm: 1rem; /* 16 px */
+  --btn-icon-md: 1.25rem; /* 20 px */
+  --btn-icon-lg: 1.5rem; /* 24 px */
+  --btn-icon-xl: 1.75rem; /* 28 px */
+
+  /* ── gap between icon and label per size ── */
+  --btn-gap-sm: 0.375rem; /*  6 px */
+  --btn-gap-md: 0.5rem; /*  8 px */
+  --btn-gap-lg: 0.5rem; /*  8 px */
+  --btn-gap-xl: 0.625rem; /* 10 px */
+
+  /*
+   * Shared border width — solid buttons use a transparent border of the same
+   * width so layout is identical when toggling between solid and outlined.
+   * No layout shift. No `box-sizing` tricks needed.
+   */
+  --btn-border-width: 2px;
+}
+
+/* ─── Base ───────────────────────────────────────────────────────────────── */
+
+/*
+ * Private tokens (--_btn-*) are set once here and overridden by colour-variant
+ * and size-modifier classes. The base hover/focus/active rules read those tokens,
+ * so they never need to be repeated per variant.
+ *
+ * IMPORTANT: Custom property defaults are on `.btn` alone (specificity 0,1,0).
+ * This lets modifier classes like `.btn--secondary` (also 0,1,0) win by source
+ * order. If `a.btn:any-link` were included here it would raise specificity to
+ * 0,2,0 for anchor elements, overriding all modifier classes.
+ */
+.btn {
+  /* ── Private colour tokens — overridden by .btn--{variant} ── */
+  --_btn-bg: var(--color-primary);
+  --_btn-bg-hover: var(--color-primary-hover);
+  --_btn-bg-active: var(--color-primary-active);
+  --_btn-text: var(--color-primary-text);
+  --_btn-subtle: var(--color-primary-subtle);
+  --_btn-border: var(--color-primary-border);
+  --_btn-focus: var(--color-primary-focus);
+
+  /*
+   * Outlined text colour. Defaults to the fill colour.
+   * .btn--warning overrides this to amber-700 (light) / amber-300 (dark) because
+   * amber-600 (--color-warning in light mode) is only 3.3:1 on white — WCAG fail.
+   */
+  --_btn-outlined-text: var(--_btn-bg);
+
+  /* ── Private size tokens — overridden by .btn--{size} ── */
+  --_btn-height: var(--btn-height-md);
+  --_btn-font-size: var(--btn-font-size-md);
+  --_btn-px: var(--btn-px-md);
+  --_btn-icon-size: var(--btn-icon-md);
+  --_btn-gap: var(--btn-gap-md);
+}
+
+.btn,
+a.btn:any-link {
+  /* ── Layout ── */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--_btn-gap);
+  vertical-align: middle;
+
+  /* ── Sizing ──
+   *
+   * min-height instead of height: when a user's text-spacing override pushes
+   * line-height above 1.25, the button grows rather than clipping (WCAG 1.4.12).
+   * padding-block: 0 lets the flexbox handle vertical centring.
+   */
+  box-sizing: border-box;
+  min-height: var(--_btn-height);
+  padding-block: 0;
+  padding-inline: var(--_btn-px);
+
+  /* ── Typography ── */
+  font-family: var(--body-font-family);
+  font-size: var(--_btn-font-size);
+  font-style: normal;
+  font-weight: 500;
+  line-height: 1.25;
+  letter-spacing: 0.01em;
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+
+  /* ── Appearance ── */
+  border: var(--btn-border-width) solid transparent;
+  border-radius: var(--border-radius-m);
+  background-color: var(--_btn-bg);
+  color: var(--_btn-text);
+  cursor: pointer;
+  user-select: none;
+
+  /* ── Transitions ── */
+  transition:
+    background-color var(--transition-base),
+    border-color var(--transition-base),
+    color var(--transition-base),
+    box-shadow var(--transition-base),
+    outline-offset 100ms ease;
+}
+
+/* Hover */
+.btn:hover,
+a.btn:any-link:hover {
+  background-color: var(--_btn-bg-hover);
+  cursor: pointer;
+}
+
+/* Active / pressed */
+.btn:active,
+a.btn:any-link:active {
+  background-color: var(--_btn-bg-active);
+}
+
+/*
+ * Focus ring — WCAG 2.4.11 / 2.4.13
+ * 3 px solid, offset 3 px. Focus colour tokens are chosen at ≥ 4.5:1 against
+ * the page background (e.g. blue-700 is 10.9:1 on white; blue-200 is ≈ 9:1 on
+ * the dark page surface).
+ */
+.btn:focus-visible,
+a.btn:any-link:focus-visible {
+  outline: 3px solid var(--_btn-focus);
+  outline-offset: 3px;
+}
+
+/* ─── Sizes ──────────────────────────────────────────────────────────────── */
+
+/* sm — 32 px min-height, 12 px font */
+.btn--sm {
+  --_btn-height: var(--btn-height-sm);
+  --_btn-font-size: var(--btn-font-size-sm);
+  --_btn-px: var(--btn-px-sm);
+  --_btn-icon-size: var(--btn-icon-sm);
+  --_btn-gap: var(--btn-gap-sm);
+}
+
+/* lg — 48 px min-height, 16 px font */
+.btn--lg {
+  --_btn-height: var(--btn-height-lg);
+  --_btn-font-size: var(--btn-font-size-lg);
+  --_btn-px: var(--btn-px-lg);
+  --_btn-icon-size: var(--btn-icon-lg);
+  --_btn-gap: var(--btn-gap-lg);
+}
+
+/* xl — 56 px min-height, 18 px font */
+.btn--xl {
+  --_btn-height: var(--btn-height-xl);
+  --_btn-font-size: var(--btn-font-size-xl);
+  --_btn-px: var(--btn-px-xl);
+  --_btn-icon-size: var(--btn-icon-xl);
+  --_btn-gap: var(--btn-gap-xl);
+}
+
+/* ─── Semantic colour variants ───────────────────────────────────────────── */
+
+/*
+ * Each variant remaps the private tokens. Hover, active, focus, and outlined
+ * states are inherited from the base rules above — nothing is repeated.
+ * .btn--primary is the default (tokens already set on the base rule) but is
+ * listed explicitly for copy-paste clarity.
+ */
+
+.btn--primary {
+  --_btn-bg: var(--color-primary);
+  --_btn-bg-hover: var(--color-primary-hover);
+  --_btn-bg-active: var(--color-primary-active);
+  --_btn-text: var(--color-primary-text);
+  --_btn-subtle: var(--color-primary-subtle);
+  --_btn-border: var(--color-primary-border);
+  --_btn-focus: var(--color-primary-focus);
+  --_btn-outlined-text: var(--color-primary);
+}
+
+.btn--secondary {
+  --_btn-bg: var(--color-secondary);
+  --_btn-bg-hover: var(--color-secondary-hover);
+  --_btn-bg-active: var(--color-secondary-active);
+  --_btn-text: var(--color-secondary-text);
+  --_btn-subtle: var(--color-secondary-subtle);
+  --_btn-border: var(--color-secondary-border);
+  --_btn-focus: var(--color-secondary-focus);
+  --_btn-outlined-text: var(--color-secondary);
+}
+
+.btn--tertiary {
+  --_btn-bg: var(--color-tertiary);
+  --_btn-bg-hover: var(--color-tertiary-hover);
+  --_btn-bg-active: var(--color-tertiary-active);
+  --_btn-text: var(--color-tertiary-text);
+  --_btn-subtle: var(--color-tertiary-subtle);
+  --_btn-border: var(--color-tertiary-border);
+  --_btn-focus: var(--color-tertiary-focus);
+  --_btn-outlined-text: var(--color-tertiary);
+}
+
+.btn--danger {
+  --_btn-bg: var(--color-danger);
+  --_btn-bg-hover: var(--color-danger-hover);
+  --_btn-bg-active: var(--color-danger-active);
+  --_btn-text: var(--color-danger-text);
+  --_btn-subtle: var(--color-danger-subtle);
+  --_btn-border: var(--color-danger-border);
+  --_btn-focus: var(--color-danger-focus);
+  --_btn-outlined-text: var(--color-danger);
+}
+
+.btn--success {
+  --_btn-bg: var(--color-success);
+  --_btn-bg-hover: var(--color-success-hover);
+  --_btn-bg-active: var(--color-success-active);
+  --_btn-text: var(--color-success-text);
+  --_btn-subtle: var(--color-success-subtle);
+  --_btn-border: var(--color-success-border);
+  --_btn-focus: var(--color-success-focus);
+  --_btn-outlined-text: var(--color-success);
+}
+
+.btn--info {
+  --_btn-bg: var(--color-info);
+  --_btn-bg-hover: var(--color-info-hover);
+  --_btn-bg-active: var(--color-info-active);
+  --_btn-text: var(--color-info-text);
+  --_btn-subtle: var(--color-info-subtle);
+  --_btn-border: var(--color-info-border);
+  --_btn-focus: var(--color-info-focus);
+  --_btn-outlined-text: var(--color-info);
+}
+
+/*
+ * Warning — amber-600 (--color-warning light mode) is only 3.3:1 on white.
+ * Solid buttons are safe because --color-warning-text is --color-neutral-900
+ * (dark text on amber bg, ≥ 4.5:1 ✓).
+ * Outlined text uses --color-warning-hover instead:
+ *   light mode → amber-700, 5.5:1 on white ✓
+ *   dark mode  → amber-300 (token resolves via themes.css), ≥ 9:1 on dark bg ✓
+ */
+.btn--warning {
+  --_btn-bg: var(--color-warning);
+  --_btn-bg-hover: var(--color-warning-hover);
+  --_btn-bg-active: var(--color-warning-active);
+  --_btn-text: var(--color-warning-text);
+  --_btn-subtle: var(--color-warning-subtle);
+  --_btn-border: var(--color-warning-border);
+  --_btn-focus: var(--color-warning-focus);
+  --_btn-outlined-text: var(--color-warning-hover);
+}
+
+/* ─── Outlined variant ───────────────────────────────────────────────────── */
+
+/*
+ * Transparent fill; coloured border and text. The border-width is identical to
+ * the solid variant's transparent border, so no layout shift occurs when
+ * toggling between solid and outlined programmatically.
+ *
+ * Hover shows a subtle tint surface; the border shifts to the full fill colour.
+ */
+.btn--outlined,
+a.btn--outlined:any-link {
+  background-color: transparent;
+  border-color: var(--_btn-border);
+  color: var(--_btn-outlined-text);
+}
+
+.btn--outlined:hover,
+a.btn--outlined:any-link:hover {
+  background-color: var(--_btn-subtle);
+  border-color: var(--_btn-bg);
+  color: var(--_btn-outlined-text);
+}
+
+.btn--outlined:active,
+a.btn--outlined:any-link:active {
+  background-color: var(--_btn-subtle);
+  border-color: var(--_btn-bg-hover);
+  color: var(--_btn-outlined-text);
+}
+
+/* ─── Pilled shape ───────────────────────────────────────────────────────── */
+
+.btn--pilled,
+a.btn--pilled:any-link {
+  border-radius: var(--border-radius-pill);
+}
+
+/* ─── Icon system ────────────────────────────────────────────────────────── */
+
+/*
+ * .btn__icon — wrapper for an inline SVG or <img> inside a button.
+ *
+ * Accessibility rules:
+ *   - Always add aria-hidden="true" to .btn__icon — the surrounding button
+ *     text (or aria-label for icon-only buttons) is the accessible name.
+ *   - Icon-only buttons MUST have aria-label or aria-labelledby on the <button>.
+ *
+ * HTML patterns
+ * ─────────────
+ * Icon left:
+ *   <button class="btn btn--primary btn--icon-left">
+ *     <span class="btn__icon" aria-hidden="true"><svg>…</svg></span>
+ *     Label
+ *   </button>
+ *
+ * Icon right:
+ *   <button class="btn btn--primary btn--icon-right">
+ *     Label
+ *     <span class="btn__icon" aria-hidden="true"><svg>…</svg></span>
+ *   </button>
+ *
+ * Both icons:
+ *   <button class="btn btn--primary btn--icon-left btn--icon-right">
+ *     <span class="btn__icon" aria-hidden="true"><svg>…</svg></span>
+ *     Label
+ *     <span class="btn__icon" aria-hidden="true"><svg>…</svg></span>
+ *   </button>
+ *
+ * Icon only:
+ *   <button class="btn btn--primary btn--icon-only" aria-label="Delete item">
+ *     <span class="btn__icon" aria-hidden="true"><svg>…</svg></span>
+ *   </button>
+ *
+ * Link as button:
+ *   <a href="/path" class="btn btn--secondary btn--lg btn--icon-left">
+ *     <span class="btn__icon" aria-hidden="true"><svg>…</svg></span>
+ *     Go somewhere
+ *   </a>
+ */
+.btn__icon {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--_btn-icon-size);
+  height: var(--_btn-icon-size);
+  pointer-events: none;
+
+  & > svg,
+  & > img {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+}
+
+/*
+ * Icon-only — square tap target.
+ * The min-height token also governs the min-width, giving a square at all sizes.
+ * aspect-ratio: 1 enforces squareness even if the browser computes min-height
+ * and min-width differently.
+ *
+ * WCAG 2.5.8: sm = 32 × 32 px, md = 40 × 40 px, lg = 48 × 48 px, xl = 56 × 56 px.
+ * All exceed the 24 × 24 px minimum.
+ */
+.btn--icon-only,
+a.btn--icon-only:any-link {
+  padding-inline: 0;
+  min-width: var(--_btn-height);
+  aspect-ratio: 1 / 1;
+}
+
+/* ─── Disabled states ────────────────────────────────────────────────────── */
+
+/*
+ * WCAG 1.4.3 explicitly exempts inactive (disabled) controls from contrast
+ * requirements. We use semantic surface tokens so disabled appearance adapts
+ * to dark mode automatically — no extra @media block required.
+ *
+ *   --color-surface-2    neutral-200 light / neutral-700 dark
+ *   --color-text-muted   neutral-600 light / neutral-400 dark
+ *   --color-border       neutral-300 light / neutral-700 dark
+ *
+ * pointer-events: none is applied to <a> elements styled as buttons because
+ * <a> cannot carry a native disabled attribute. aria-disabled="true" is the
+ * correct semantic; JS must prevent navigation separately for non-CSS contexts.
+ */
+.btn:disabled,
+.btn[aria-disabled='true'],
+a.btn[aria-disabled='true'] {
+  background-color: var(--color-surface-2);
+  border-color: transparent;
+  color: var(--color-text-muted);
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.btn--outlined:disabled,
+.btn--outlined[aria-disabled='true'],
+a.btn--outlined[aria-disabled='true'] {
+  background-color: transparent;
+  border-color: var(--color-border);
+  color: var(--color-text-muted);
+}
+
+/* ─── Reduced motion ─────────────────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  .btn,
+  a.btn:any-link {
+    transition: none;
+  }
+}
+
+/* ─── Button group ───────────────────────────────────────────────────────── */
+
+/*
+ * .btn-group — a flush row of related .btn elements.
+ *
+ * Adjacent borders collapse (negative margin technique) so two outlined
+ * buttons side by side share a single 2 px border line, not a 4 px double.
+ * Hovered/focused buttons gain z-index to render their full outline on top.
+ *
+ * HTML:
+ *   <div class="btn-group" role="group" aria-label="View options">
+ *     <button class="btn btn--outlined">Day</button>
+ *     <button class="btn btn--outlined">Week</button>
+ *     <button class="btn btn--outlined">Month</button>
+ *   </div>
+ */
+.btn-group {
+  display: inline-flex;
+  vertical-align: middle;
+
+  & > .btn,
+  & > a.btn {
+    position: relative;
+    flex: 1 1 auto;
+    border-radius: 0;
+
+    /* Collapse the shared border between adjacent buttons */
+    &:not(:first-child) {
+      margin-inline-start: calc(var(--btn-border-width) * -1);
+    }
+
+    /* Raise hovered/focused button so its outline paints over its neighbour */
+    &:hover,
+    &:focus-visible {
+      z-index: var(--z-raised);
+    }
+
+    /* Restore end-cap radius on first child */
+    &:first-child {
+      border-start-start-radius: var(--border-radius-m);
+      border-end-start-radius: var(--border-radius-m);
+    }
+
+    /* Restore end-cap radius on last child */
+    &:last-child {
+      border-start-end-radius: var(--border-radius-m);
+      border-end-end-radius: var(--border-radius-m);
+    }
+  }
+
+  /* Pilled group — pill caps on first and last only */
+  &.btn-group--pilled {
+    & > .btn:first-child,
+    & > a.btn:first-child {
+      border-start-start-radius: var(--border-radius-pill);
+      border-end-start-radius: var(--border-radius-pill);
+    }
+
+    & > .btn:last-child,
+    & > a.btn:last-child {
+      border-start-end-radius: var(--border-radius-pill);
+      border-end-end-radius: var(--border-radius-pill);
+    }
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Border & Ring Utilities ─────────────────────────────────────────────── */
+
+/* ══════════════════════════════════════════════════════════════════════════ */
+
+/*
+ * These classes live in the same file and cascade layer as the button system.
+ * Because this file is imported AFTER utilities.css within the `utilities`
+ * layer, these declarations appear later in the layer source order and
+ * therefore override the border-color set by the .border shorthand class.
+ *
+ * Usage — pair with any .border / .border-{side} class:
+ *   <div class="border border-primary">highlighted card</div>
+ *   <input class="border border-danger">        (error state)
+ */
+
+/* ─── Semantic border colours ────────────────────────────────────────────── */
+
+/*
+ * Each colour class sets border-color only. It relies on a border being made
+ * visible first (via .border, a component's own border, or border-style/width
+ * utilities). The colours auto-adapt to dark mode via the semantic token layer.
+ */
+.border-primary {
+  border-color: var(--color-primary-border);
+}
+
+.border-secondary {
+  border-color: var(--color-secondary-border);
+}
+
+.border-tertiary {
+  border-color: var(--color-tertiary-border);
+}
+
+.border-danger {
+  border-color: var(--color-danger-border);
+}
+
+.border-success {
+  border-color: var(--color-success-border);
+}
+
+.border-info {
+  border-color: var(--color-info-border);
+}
+
+.border-warning {
+  border-color: var(--color-warning-border);
+}
+
+/* Neutral surface borders */
+.border-subtle {
+  border-color: var(--color-border);
+} /* default border tone */
+.border-surface {
+  border-color: var(--color-surface-2);
+} /* quieter divider */
+
+/* ─── Border width ───────────────────────────────────────────────────────── */
+
+/*
+ * Apply after a side class (.border, .border-top, etc.) to adjust thickness.
+ * Width alone does not make a border visible — border-style must be set.
+ */
+.border-width-1 {
+  border-width: 1px;
+}
+
+.border-width-2 {
+  border-width: 2px;
+}
+
+.border-width-3 {
+  border-width: 3px;
+}
+
+.border-width-4 {
+  border-width: 4px;
+}
+
+/* ─── Per-side border radius ─────────────────────────────────────────────── */
+
+/*
+ * Complements the corner-based utilities already in utilities.css
+ * (.rounded, .rounded-sm, .rounded-lg, .rounded-pill, .rounded-circle, .rounded-0).
+ * These classes apply radius to a logical side (block-start, block-end,
+ * inline-start, inline-end) using logical properties for RTL support.
+ *
+ * Size variants follow the same token names as the corner utilities:
+ *   -sm → --border-radius-s   (0.25 rem)
+ *   (none) → --border-radius-m (0.5 rem)
+ *   -lg → --border-radius-l   (1 rem)
+ *   -pill → --border-radius-pill (50 rem)
+ */
+
+/* block-start (top in LTR horizontal writing mode) */
+.rounded-top {
+  border-start-start-radius: var(--border-radius-m);
+  border-start-end-radius: var(--border-radius-m);
+}
+
+.rounded-top-sm {
+  border-start-start-radius: var(--border-radius-s);
+  border-start-end-radius: var(--border-radius-s);
+}
+
+.rounded-top-lg {
+  border-start-start-radius: var(--border-radius-l);
+  border-start-end-radius: var(--border-radius-l);
+}
+
+.rounded-top-pill {
+  border-start-start-radius: var(--border-radius-pill);
+  border-start-end-radius: var(--border-radius-pill);
+}
+
+/* block-end (bottom in LTR horizontal writing mode) */
+.rounded-bottom {
+  border-end-start-radius: var(--border-radius-m);
+  border-end-end-radius: var(--border-radius-m);
+}
+
+.rounded-bottom-sm {
+  border-end-start-radius: var(--border-radius-s);
+  border-end-end-radius: var(--border-radius-s);
+}
+
+.rounded-bottom-lg {
+  border-end-start-radius: var(--border-radius-l);
+  border-end-end-radius: var(--border-radius-l);
+}
+
+.rounded-bottom-pill {
+  border-end-start-radius: var(--border-radius-pill);
+  border-end-end-radius: var(--border-radius-pill);
+}
+
+/* inline-start (left in LTR) */
+.rounded-start {
+  border-start-start-radius: var(--border-radius-m);
+  border-end-start-radius: var(--border-radius-m);
+}
+
+.rounded-start-sm {
+  border-start-start-radius: var(--border-radius-s);
+  border-end-start-radius: var(--border-radius-s);
+}
+
+.rounded-start-lg {
+  border-start-start-radius: var(--border-radius-l);
+  border-end-start-radius: var(--border-radius-l);
+}
+
+.rounded-start-pill {
+  border-start-start-radius: var(--border-radius-pill);
+  border-end-start-radius: var(--border-radius-pill);
+}
+
+/* inline-end (right in LTR) */
+.rounded-end {
+  border-start-end-radius: var(--border-radius-m);
+  border-end-end-radius: var(--border-radius-m);
+}
+
+.rounded-end-sm {
+  border-start-end-radius: var(--border-radius-s);
+  border-end-end-radius: var(--border-radius-s);
+}
+
+.rounded-end-lg {
+  border-start-end-radius: var(--border-radius-l);
+  border-end-end-radius: var(--border-radius-l);
+}
+
+.rounded-end-pill {
+  border-start-end-radius: var(--border-radius-pill);
+  border-end-end-radius: var(--border-radius-pill);
+}
+
+/* ─── Focus ring utilities ───────────────────────────────────────────────── */
+
+/*
+ * Standalone focus-ring helpers for non-button interactive elements
+ * (custom inputs, cards, links-as-regions, etc.).
+ *
+ * .ring applies the project's standard ring (3 px solid, offset 3 px).
+ * A colour modifier (e.g. .ring-danger) overrides the ring colour only.
+ *
+ * WCAG 2.4.11 / 2.4.13 — all focus colours are chosen at ≥ 3:1 (most
+ * at ≥ 4.5:1) against the light and dark page backgrounds.
+ *
+ * Usage:
+ *   <div tabindex="0" class="card ring ring-primary" …>
+ *   <input class="ring ring-danger">          (error state)
+ */
+.ring {
+  outline: 3px solid var(--color-primary-focus);
+  outline-offset: 3px;
+}
+
+/* ── Ring colour modifiers — override the outline-color only ── */
+.ring-primary {
+  outline-color: var(--color-primary-focus);
+}
+
+.ring-secondary {
+  outline-color: var(--color-secondary-focus);
+}
+
+.ring-tertiary {
+  outline-color: var(--color-tertiary-focus);
+}
+
+.ring-danger {
+  outline-color: var(--color-danger-focus);
+}
+
+.ring-success {
+  outline-color: var(--color-success-focus);
+}
+
+.ring-info {
+  outline-color: var(--color-info-focus);
+}
+
+.ring-warning {
+  outline-color: var(--color-warning-focus);
+}
+
+/* ── Ring offset sizes ── */
+.ring-offset-1 {
+  outline-offset: 1px;
+}
+
+.ring-offset-2 {
+  outline-offset: 2px;
+}
+
+.ring-offset-3 {
+  outline-offset: 3px;
+}
+
+.ring-offset-4 {
+  outline-offset: 4px;
+}
+
+/* ── Ring width ── */
+.ring-1 {
+  outline-width: 1px;
+}
+
+.ring-2 {
+  outline-width: 2px;
+}
+
+.ring-3 {
+  outline-width: 3px;
+}
+
+.ring-4 {
+  outline-width: 4px;
+}
+
+.btn .lni {
+  line-height: 0;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Badge component ─────────────────────────────────────────────────────── */
+
+/* ══════════════════════════════════════════════════════════════════════════ */
+
+/*
+ * Usage:
+ *   <span class="badge badge--success">New</span>
+ *   <span class="badge badge--warning badge--outlined">Beta</span>
+ *
+ *   Via regen directive:
+ *   {{regen:start;element:badge;theme:primary}}Label{{regen:end}}
+ */
+
+.badge {
+  --_badge-bg: var(--color-primary);
+  --_badge-text: var(--color-primary-text);
+  --_badge-border: var(--color-primary-border);
+  --_badge-outlined-text: var(--color-primary);
+
+  display: inline-flex;
+  align-items: center;
+  padding-block: 0.2em;
+  padding-inline: 0.6em;
+  border: 1px solid transparent;
+  border-radius: var(--border-radius-pill);
+  background-color: var(--_badge-bg);
+  color: var(--_badge-text);
+  font-size: var(--font-size-small);
+  font-weight: 500;
+  line-height: 1.4;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+/* ── Badge colour variants ── */
+.badge--primary {
+  --_badge-bg: var(--color-primary);
+  --_badge-text: var(--color-primary-text);
+  --_badge-border: var(--color-primary-border);
+  --_badge-outlined-text: var(--color-primary);
+}
+
+.badge--secondary {
+  --_badge-bg: var(--color-secondary);
+  --_badge-text: var(--color-secondary-text);
+  --_badge-border: var(--color-secondary-border);
+  --_badge-outlined-text: var(--color-secondary);
+}
+
+.badge--tertiary {
+  --_badge-bg: var(--color-tertiary);
+  --_badge-text: var(--color-tertiary-text);
+  --_badge-border: var(--color-tertiary-border);
+  --_badge-outlined-text: var(--color-tertiary);
+}
+
+.badge--danger {
+  --_badge-bg: var(--color-danger);
+  --_badge-text: var(--color-danger-text);
+  --_badge-border: var(--color-danger-border);
+  --_badge-outlined-text: var(--color-danger);
+}
+
+.badge--success {
+  --_badge-bg: var(--color-success);
+  --_badge-text: var(--color-success-text);
+  --_badge-border: var(--color-success-border);
+  --_badge-outlined-text: var(--color-success);
+}
+
+.badge--info {
+  --_badge-bg: var(--color-info);
+  --_badge-text: var(--color-info-text);
+  --_badge-border: var(--color-info-border);
+  --_badge-outlined-text: var(--color-info);
+}
+
+.badge--warning {
+  --_badge-bg: var(--color-warning);
+  --_badge-text: var(--color-warning-text);
+  --_badge-border: var(--color-warning-border);
+  --_badge-outlined-text: var(--color-warning-hover);
+}
+
+/* ── Badge outlined variant ── */
+.badge--outlined {
+  background-color: transparent;
+  border-color: var(--_badge-border);
+  color: var(--_badge-outlined-text);
+}
+
+/* ── Badge pilled shape (regen radius:pilled) ── */
+.badge--pilled {
+  border-radius: var(--border-radius-pill);
+}

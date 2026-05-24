@@ -22,6 +22,11 @@ export default [
   ...compat.extends('airbnb-base', 'prettier'),
   {
     files: ['eslint.config.js', 'vitest.config.js', 'playwright.config.js', '**/*.test.js', 'tests/**/*.js'],
+    languageOptions: {
+      globals: {
+        ...globals.jest,
+      },
+    },
     rules: {
       'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
       'import/no-unresolved': 'off',
