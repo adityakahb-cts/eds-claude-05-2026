@@ -5,8 +5,9 @@
 ## Global implementation
 
 1. The goal is to create a mobile first designed site with various components as listed in https://ui.shadcn.com/docs/components
-1. temp.scss inside \_\_extras folder gives idea about some required items.
+1. This will need third party JS plugins, which we will incorporate gradually, not all at once and not at very beginning of this setup.
 1. Additionally, just like Bootstrap - borders, grid, flex, display, forms, normalize, buttons, typography etc. needs to be implemented.
+1. temp.scss inside \_\_extras folder gives idea about some required items.
 1. All latest CSS and ES6 standards need to be maintained.
 1. All ES6 code must have proper comments and JSDoc.
 1. ESLint, Prettier, Stylelint, Vitest and Playwright need to be implemented. ESLint config file should be eslint.config.js, peer dependiencies should be taken care of.
@@ -25,6 +26,11 @@
 1. Claude to suggest best mcps, plugins, skills, etc. to achieve the best results.
 1. Lighthouse score target is 100 for mobile and desktop viewports.
 1. Analyze styles folder and respective CSS files inside blocks. Check the CSS imports, variables and other related architecture. This must be followed.
+1. Plan a git process - branching, checkout, checkin, PR, merging, review and testing strategy. The main branch must be protected and all new branches must be created from develop branch. Only with a final approval, code must be pushed to main branch.
+1. Plan an environment strategy with keeping dev, qa, uat, prelive and prod environments in mind.
+1. Plan a CI/CD pipeline if needed.
+1. Create custom skills, commands, prompts etc. for the architecture.
+1. Suggest more improvements to make it robust for fast and scalable EDS website.
 
 ## Block implementation
 
