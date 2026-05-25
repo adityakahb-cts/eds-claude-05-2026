@@ -127,16 +127,16 @@ Do not load fonts anywhere else. The `localhost` guard prevents sessionStorage f
 
 ---
 
-## Regen Directives (`scripts/config/global-decorators.js`)
+## Spawn Directives (`scripts/config/global-decorators.js`)
 
-Regen directives let authors embed declarative markup instructions directly in page content. `decorateRegenElements(main)` — called from `decorateMain` — finds every `{{regen:start;...}} … {{regen:end}}` pair and replaces the enclosed content with the specified element.
+Spawn directives let authors embed declarative markup instructions directly in page content. `decorateSpawnElements(main)` — called from `decorateMain` — finds every `{{spawn:start;...}} … {{spawn:end}}` pair and replaces the enclosed content with the specified element.
 
 ### Syntax
 
 ```
-{{regen:start;element:<type>;<key>:<value>;…}}
+{{spawn:start;element:<type>;<key>:<value>;…}}
   [authored content between markers]
-{{regen:end}}
+{{spawn:end}}
 ```
 
 **CSS keys** (`element`, `theme`, `style`, `size`, `radius`, `level`, `author`, `source`) drive class/tag logic and are never set as HTML attributes. All other keys are applied as HTML attributes verbatim (`href`, `alt`, `width`, `target`, `aria-label`, etc.).
@@ -148,9 +148,9 @@ Regen directives let authors embed declarative markup instructions directly in p
 Enhances an existing `<a>` in place, or creates a new one if none is found. Receives the full `.btn` class system.
 
 ```
-{{regen:start;element:anchor;theme:primary;style:solid;size:large;target:blank;title:"Go"}}
+{{spawn:start;element:anchor;theme:primary;style:solid;size:large;target:blank;title:"Go"}}
 Link Text
-{{regen:end}}
+{{spawn:end}}
 ```
 
 | Param      | Values                                                                           | Effect                              |
@@ -166,9 +166,9 @@ Link Text
 Always produces a `<button type="button">`. Same `theme`/`style`/`size`/`radius` class system as `anchor`.
 
 ```
-{{regen:start;element:button;theme:danger;style:outlined;radius:pilled;aria-label:"Remove item"}}
+{{spawn:start;element:button;theme:danger;style:outlined;radius:pilled;aria-label:"Remove item"}}
 Delete
-{{regen:end}}
+{{spawn:end}}
 ```
 
 #### `element:image`
@@ -176,9 +176,9 @@ Delete
 Produces an `<img>`. Place an `<a>` between the markers — its `href` becomes the `img src`. If the anchor has a `target` the image is wrapped in a link.
 
 ```
-{{regen:start;element:image;alt:"Hero image";width:1200;height:600;loading:lazy}}
+{{spawn:start;element:image;alt:"Hero image";width:1200;height:600;loading:lazy}}
 <a href="/media/hero.jpg" target="_blank">Hero</a>
-{{regen:end}}
+{{spawn:end}}
 ```
 
 | Param                                  | Effect                                                                   |
@@ -193,9 +193,9 @@ Produces an `<img>`. Place an `<a>` between the markers — its `href` becomes t
 Produces a `<p>`. `style` generates a BEM modifier class.
 
 ```
-{{regen:start;element:paragraph;style:intro}}
+{{spawn:start;element:paragraph;style:intro}}
 Introductory copy that renders larger than body text.
-{{regen:end}}
+{{spawn:end}}
 ```
 
 | `style` value | Class added         | Visual result                                    |
@@ -208,9 +208,9 @@ Introductory copy that renders larger than body text.
 Produces a `<blockquote>`. `author` and `source` generate a `<footer>` with `<cite>` and `.blockquote__source`.
 
 ```
-{{regen:start;element:blockquote;author:"Jane Austen";source:"Pride and Prejudice"}}
+{{spawn:start;element:blockquote;author:"Jane Austen";source:"Pride and Prejudice"}}
 <p>It is a truth universally acknowledged…</p>
-{{regen:end}}
+{{spawn:end}}
 ```
 
 Output:
@@ -234,9 +234,9 @@ Both `author` and `source` are optional. Omitting both suppresses the `<footer>`
 Produces `<h1>`–`<h6>` via `level` (default `h2`). `style` adds a display-scale class for oversized hero headings.
 
 ```
-{{regen:start;element:heading;level:1;style:display1}}Page Title{{regen:end}}
+{{spawn:start;element:heading;level:1;style:display1}}Page Title{{spawn:end}}
 
-{{regen:start;element:heading;level:2}}Section Title{{regen:end}}
+{{spawn:start;element:heading;level:2}}Section Title{{spawn:end}}
 ```
 
 | Param      | Values                | Effect                                                     |
@@ -261,9 +261,9 @@ Display scale (fluid, matches `--font-size-display*` tokens):
 Produces an inline `<span class="badge">`. Follows the same `theme`/`style` pattern as `.btn`.
 
 ```
-{{regen:start;element:badge;theme:success}}New{{regen:end}}
+{{spawn:start;element:badge;theme:success}}New{{spawn:end}}
 
-{{regen:start;element:badge;theme:warning;style:outlined}}Beta{{regen:end}}
+{{spawn:start;element:badge;theme:warning;style:outlined}}Beta{{spawn:end}}
 ```
 
 | Param      | Values                                                                           | Effect                                       |
@@ -278,11 +278,11 @@ Produces an inline `<span class="badge">`. Follows the same `theme`/`style` patt
 Produces a `<div class="alert">` with a coloured left border and subtle tinted background. Add `role:alert` for live-region announcements.
 
 ```
-{{regen:start;element:alert;theme:warning;role:alert}}
+{{spawn:start;element:alert;theme:warning;role:alert}}
 <p>Your session will expire in 5 minutes.</p>
-{{regen:end}}
+{{spawn:end}}
 
-{{regen:start;element:alert;theme:success}}Changes saved.{{regen:end}}
+{{spawn:start;element:alert;theme:success}}Changes saved.{{spawn:end}}
 ```
 
 | Param      | Values                                                                           | Effect                                                             |
@@ -297,13 +297,13 @@ Produces a `<div class="alert">` with a coloured left border and subtle tinted b
 Produces an `<hr>`. No content between the markers is required.
 
 ```
-{{regen:start;element:divider}}{{regen:end}}
+{{spawn:start;element:divider}}{{spawn:end}}
 ```
 
 ### Adding a new element type
 
-1. Add a new `else if (element === '<type>')` branch in `applyRegenDirective` in `scripts/config/global-decorators.js`.
-2. If the element uses special params that must not become HTML attributes, add those key names to `REGEN_CSS_KEYS`.
+1. Add a new `else if (element === '<type>')` branch in `applySpawnDirective` in `scripts/config/global-decorators.js`.
+2. If the element uses special params that must not become HTML attributes, add those key names to `SPAWN_CSS_KEYS`.
 3. Add supporting CSS to `styles/config/typography.css` (text/layout elements), `styles/config/buttons.css` (inline components), or `styles/config/globals.css` (block components).
 4. Document the new element in this section.
 

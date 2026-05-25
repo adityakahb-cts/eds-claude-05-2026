@@ -1,10 +1,5 @@
-// The footer block builds its DOM programmatically from a footer fragment.
-// This file documents the final rendered structure for reference.
+import html from '../../scripts/config/html.js';
 
-export const FOOTER_MARKUP = /* html */ `
-<div>
-  {content}
-</div>
-`;
-
+export const CONTENT_MODEL = { id: 'footer', fields: [] };
+export const FOOTER_MARKUP = html`<div class="footer-wrapper"></div>`;
 export default FOOTER_MARKUP;
