@@ -1,3 +1,5 @@
+export const CONTENT_MODEL = { id: 'header', fields: [] };
+
 // The header block builds its DOM from a nav fragment.
 // CONTENT_MODEL_SPEC describes the authored fields the nav fragment must supply.
 // The MARKUP constants below define the final rendered structure.

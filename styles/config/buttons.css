@@ -826,8 +826,8 @@ a.btn--outlined[aria-disabled='true'] {
  *   <span class="badge badge--success">New</span>
  *   <span class="badge badge--warning badge--outlined">Beta</span>
  *
- *   Via regen directive:
- *   {{regen:start;element:badge;theme:primary}}Label{{regen:end}}
+ *   Via spawn directive:
+ *   {{spawn:start;element:badge;theme:primary}}Label{{spawn:end}}
  */
 
 .badge {
@@ -908,7 +908,7 @@ a.btn--outlined[aria-disabled='true'] {
   color: var(--_badge-outlined-text);
 }
 
-/* ── Badge pilled shape (regen radius:pilled) ── */
+/* ── Badge pilled shape (spawn radius:pilled) ── */
 .badge--pilled {
   border-radius: var(--border-radius-pill);
 }

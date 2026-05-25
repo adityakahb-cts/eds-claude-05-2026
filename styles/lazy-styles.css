@@ -2,3 +2,44 @@
 
 /* ─── Vendor: Lineicons Free icon font ───────────────────────────────────── */
 @import url('vendor/lineicons-free.css');
+
+/* Print styles */
+@media print {
+  header,
+  footer,
+  nav,
+  .btn,
+  button {
+    display: none !important;
+  }
+
+  body {
+    color: #000;
+    background: #fff;
+  }
+
+  a[href]::after {
+    content: ' (' attr(href) ')';
+  }
+}
+
+/* Text selection */
+::selection {
+  background: var(--color-primary-subtle);
+  color: var(--color-text);
+}
+
+/* Skip link */
+.skip-link:focus-visible {
+  position: fixed;
+  top: var(--spacing-3);
+  left: var(--spacing-3);
+  z-index: var(--z-toast);
+  padding: var(--spacing-2) var(--spacing-3);
+  background: var(--color-page-bg);
+  color: var(--color-primary);
+  border: 2px solid var(--color-primary);
+  border-radius: var(--border-radius-m);
+  font-weight: 700;
+  text-decoration: none;
+}
