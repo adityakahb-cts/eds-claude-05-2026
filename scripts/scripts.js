@@ -13,6 +13,8 @@ import {
 } from './aem.js';
 import { decorateIcons, decorateRegenElements } from './config/global-decorators.js';
 
+export { default as html } from './config/html.js';
+
 /**
  * Encodes a plain-text string for safe use inside an HTML attribute value.
  * Use this when interpolating text into markup template attribute values.

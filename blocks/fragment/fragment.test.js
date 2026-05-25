@@ -1,18 +1,18 @@
 import decorate, { loadFragment } from './fragment.js';
 
-jest.mock('../../scripts/scripts.js', () => ({
-  decorateMain: jest.fn(),
+vi.mock('../../scripts/scripts.js', () => ({
+  decorateMain: vi.fn(),
 }));
 
-jest.mock('../../scripts/aem.js', () => ({
-  loadSections: jest.fn().mockResolvedValue(undefined),
+vi.mock('../../scripts/aem.js', () => ({
+  loadSections: vi.fn().mockResolvedValue(undefined),
 }));
 
-global.fetch = jest.fn();
+global.fetch = vi.fn();
 
 describe('fragment — decorate', () => {
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   test('replaces block children with loaded fragment sections', async () => {
@@ -50,7 +50,7 @@ describe('fragment — decorate', () => {
 
 describe('fragment — loadFragment', () => {
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   test('returns null for non-root-relative paths', async () => {

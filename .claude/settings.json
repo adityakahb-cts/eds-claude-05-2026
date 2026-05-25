@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "sh -c 'file=$(echo \"$TOOL_INPUT\" | python3 -c \"import sys,json; d=json.load(sys.stdin); print(d.get(\\\"file_path\\\",\\\"\\\"))\" 2>/dev/null); [ -n \"$file\" ] && npx prettier --write \"$file\" 2>/dev/null; exit 0'"
+            "command": "sh -c 'file=$(echo \"$TOOL_INPUT\" | python3 -c \"import sys,json; d=json.load(sys.stdin); print(d.get(\\\"file_path\\\",\\\"\\\"))\" 2>/dev/null); [ -n \"$file\" ] && npx prettier --write \"$file\" 2>/dev/null; case \"$file\" in *.js) npx eslint --fix \"$file\" 2>/dev/null;; esac; exit 0'"
           }
         ]
       }

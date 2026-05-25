@@ -1,43 +1,33 @@
 import decorate from './header.js';
 
-jest.mock('../../scripts/aem.js', () => ({
-  getMetadata: jest.fn().mockReturnValue(''),
+vi.mock('../../scripts/scripts.js', () => ({
+  encodeHtml: vi.fn((s) => String(s)),
+  decorateMain: vi.fn(),
 }));
 
-const mockFragment = () => {
-  const main = document.createElement('main');
-  ['brand', 'sections', 'tools'].forEach((name) => {
-    const section = document.createElement('div');
-    section.className = 'default-content-wrapper';
-    section.dataset.name = name;
-    main.append(section);
-  });
-  return main;
-};
+vi.mock('../../scripts/aem.js', () => ({
+  getMetadata: vi.fn().mockReturnValue(''),
+}));
 
-jest.mock('../fragment/fragment.js', () => ({
-  loadFragment: jest.fn(),
+vi.mock('../../scripts/config/fragment-loader.js', () => ({
+  default: vi.fn().mockResolvedValue('<div data-block-name="navigation"></div>'),
+}));
+
+vi.mock('../fragment/fragment.js', () => ({
+  loadFragment: vi.fn(),
 }));
 
 describe('header', () => {
-  let loadFragment;
-
-  beforeEach(async () => {
-    ({ loadFragment } = await import('../fragment/fragment.js'));
-    loadFragment.mockResolvedValue(mockFragment());
-  });
-
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     document.body.innerHTML = '';
   });
 
-  test('renders a nav-wrapper containing a nav element', async () => {
+  test('renders siteheader-bar element', async () => {
     const block = document.createElement('div');
     document.body.append(block);
     await decorate(block);
-    expect(block.querySelector('.nav-wrapper')).toBeTruthy();
-    expect(block.querySelector('nav#nav')).toBeTruthy();
+    expect(block.querySelector('.siteheader-bar')).toBeTruthy();
   });
 
   test('clears original block content before rendering', async () => {
@@ -48,24 +38,27 @@ describe('header', () => {
     expect(block.textContent).not.toBe('original content');
   });
 
-  test('nav starts with aria-expanded false', async () => {
+  test('hamburger button has aria-expanded false initially', async () => {
     const block = document.createElement('div');
     document.body.append(block);
     await decorate(block);
-    expect(block.querySelector('nav').getAttribute('aria-expanded')).toBe('false');
+    const hamburger = block.querySelector('.siteheader-hamburger');
+    expect(hamburger).toBeTruthy();
+    expect(hamburger.getAttribute('aria-expanded')).toBe('false');
   });
 
-  test('renders hamburger button with accessible label', async () => {
+  test('search toggle exists with aria-expanded false', async () => {
     const block = document.createElement('div');
     document.body.append(block);
     await decorate(block);
-    const btn = block.querySelector('.nav-hamburger button');
-    expect(btn).toBeTruthy();
-    expect(btn.getAttribute('aria-label')).toBeTruthy();
+    const searchToggle = block.querySelector('.siteheader-search-toggle');
+    expect(searchToggle).toBeTruthy();
+    expect(searchToggle.getAttribute('aria-expanded')).toBe('false');
   });
 
-  test('does not throw when fragment sections are absent', async () => {
-    loadFragment.mockResolvedValue(document.createElement('main'));
+  test('does not throw when fragment is empty', async () => {
+    const { default: fetchFragmentHtml } = await import('../../scripts/config/fragment-loader.js');
+    fetchFragmentHtml.mockResolvedValue(null);
     const block = document.createElement('div');
     document.body.append(block);
     await expect(decorate(block)).resolves.not.toThrow();

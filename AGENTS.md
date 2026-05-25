@@ -34,10 +34,19 @@ The repository provides the basic structure, blocks, and configuration needed to
 ```
 ├── blocks/          # Reusable content blocks
     └── {blockname}/   - Individual block directory
-        ├── {blockname}.js      # Block's JavaScript
-        ├── {blockname}.css     # Block's styles
+        ├── {blockname}.js      # Block's JavaScript (decorate() 4-step pattern)
+        ├── {blockname}.css     # Block's styles (@import hub → ./styles/*.css partials)
+        ├── {blockname}.model.js # CONTENT_MODEL + *_MARKUP exports (html`` tagged-template)
         ├── {blockname}.test.js # Vitest unit tests
-        └── block.md            # Block documentation and content model for AI agents
+        ├── {blockname}.spec.js # Playwright e2e tests
+        ├── {blockname}.md      # Block documentation (da.live content model table)
+        └── styles/             # Breakpoint CSS partials
+            ├── default.css     # mobile-first base (< 632px)
+            ├── sm.css          # width >= 632px
+            ├── md.css          # width >= 760px
+            ├── lg.css          # width >= 992px
+            ├── xl.css          # width >= 1272px
+            └── xxl.css         # width >= 1432px
 ├── styles/          # Global styles and CSS
     ├── styles.css          # Minimal global styling and layout for your website required for LCP
     ├── lazy-styles.css     # Additional global styling and layout for below the fold/post LCP content
@@ -98,6 +107,18 @@ The repository provides the basic structure, blocks, and configuration needed to
 - Use semantic HTML5 elements
 - Ensure accessibility standards (ARIA labels, proper heading hierarchy)
 - Follow AEM markup conventions for blocks and sections
+
+### CSS Breakpoints
+
+Use modern `width >=` range syntax — NOT `min-width:`:
+
+| Token              | Literal value | CSS partial | Media query                |
+| ------------------ | ------------- | ----------- | -------------------------- |
+| `--breakpoint-sm`  | `632px`       | `sm.css`    | `@media (width >= 632px)`  |
+| `--breakpoint-md`  | `760px`       | `md.css`    | `@media (width >= 760px)`  |
+| `--breakpoint-lg`  | `992px`       | `lg.css`    | `@media (width >= 992px)`  |
+| `--breakpoint-xl`  | `1272px`      | `xl.css`    | `@media (width >= 1272px)` |
+| `--breakpoint-xxl` | `1432px`      | `xxl.css`   | `@media (width >= 1432px)` |
 
 ## Key Concepts
 
@@ -208,6 +229,53 @@ With this information, you can construct URLs for the preview environment (same 
 - Follow Adobe security guidelines
 - Regularly update dependencies
 - Use the .hlxignore file to prevent files from being served (same format as .gitingnore)
+
+## Custom Commands
+
+| Command               | What it does                                                                                      |
+| --------------------- | ------------------------------------------------------------------------------------------------- |
+| `/new-block <name>`   | Scaffolds all 6 block files + breakpoint CSS partials + `component-models.json` entry             |
+| `/sync-models`        | Diffs `blocks/*/{name}.model.js` CONTENT_MODEL exports against `component-models.json`            |
+| `/preview <path>`     | Constructs `{branch}--{repo}--{owner}.aem.page/{path}` preview URL for the current git branch     |
+| `/pagespeed <path>`   | Runs Lighthouse CI against the feature preview URL; fails if any score < 100                      |
+| `/da-sync <block>`    | Uses da-live-admin MCP to verify authored pages using a block render correctly                    |
+| `/block-check <name>` | Validates all 6 files present, no innerHTML, scoped CSS, CONTENT_MODEL.id match, component-models |
+| `/axe-check <path>`   | Loads path in Playwright, runs axe-core, exits 1 on critical WCAG violations                      |
+| `/run-e2e <block>`    | Runs `blocks/{block}/{block}.spec.js` only; opens trace viewer on failure                         |
+
+## Pre-push Cleanup
+
+Before pushing any branch, delete temporary artifacts:
+
+```sh
+rm -f __temp.html
+rm -rf test-results/
+rm -f tests/fragments/*-fragment-outerhtml.html
+```
+
+## Fragment-Loading Blocks
+
+All blocks that load a CMS fragment must use `fetchFragmentHtml` from `scripts/config/fragment-loader.js`:
+
+```js
+import { loadFragment } from '../fragment/fragment.js';
+import fetchFragmentHtml from '../../scripts/config/fragment-loader.js';
+
+const fragmentHtml = await fetchFragmentHtml(loadFragment, 'nav', '/nav');
+if (!fragmentHtml) return;
+const temp = document.createElement('div');
+temp.innerHTML = fragmentHtml; // safe — controlled outerHTML of a decorated fragment
+```
+
+Never repeat the three-line meta/path/load boilerplate in block files.
+
+## Demo Blocks
+
+Blocks that showcase the design system use the `_` prefix (e.g. `_type-specimen`, `_grid-demo`). Same 6-file structure as production blocks. Never used on production pages — blocked via `.hlxignore`.
+
+## Additional Skills Reference
+
+- https://github.com/adobe/skills/tree/main/plugins/aem/edge-delivery-services/skills
 
 ## Contributing
 

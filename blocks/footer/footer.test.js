@@ -1,30 +1,30 @@
 import decorate from './footer.js';
 
-jest.mock('../../scripts/aem.js', () => ({
-  getMetadata: jest.fn().mockReturnValue(''),
+vi.mock('../../scripts/config/fragment-loader.js', () => ({
+  default: vi.fn(),
 }));
 
-jest.mock('../fragment/fragment.js', () => ({
-  loadFragment: jest.fn(),
+vi.mock('../fragment/fragment.js', () => ({
+  loadFragment: vi.fn(),
 }));
 
 describe('footer', () => {
-  let loadFragment;
+  let fetchFragmentHtml;
 
   beforeEach(async () => {
-    ({ loadFragment } = await import('../fragment/fragment.js'));
+    ({ default: fetchFragmentHtml } = await import('../../scripts/config/fragment-loader.js'));
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   test('appends a wrapper div with fragment content', async () => {
-    const fragment = document.createElement('main');
     const p = document.createElement('p');
     p.textContent = 'Footer text';
-    fragment.append(p);
-    loadFragment.mockResolvedValue(fragment);
+    const div = document.createElement('div');
+    div.append(p);
+    fetchFragmentHtml.mockResolvedValue(div.outerHTML);
 
     const block = document.createElement('div');
     await decorate(block);
@@ -35,7 +35,7 @@ describe('footer', () => {
   });
 
   test('clears original block content before rendering', async () => {
-    loadFragment.mockResolvedValue(document.createElement('main'));
+    fetchFragmentHtml.mockResolvedValue('<div></div>');
     const block = document.createElement('div');
     block.textContent = 'original content';
     await decorate(block);
@@ -43,17 +43,18 @@ describe('footer', () => {
   });
 
   test('renders empty wrapper when fragment has no children', async () => {
-    loadFragment.mockResolvedValue(document.createElement('main'));
+    fetchFragmentHtml.mockResolvedValue('   ');
     const block = document.createElement('div');
     await decorate(block);
     expect(block.querySelector('div')).toBeTruthy();
     expect(block.querySelector('div').children).toHaveLength(0);
   });
 
-  test('uses /footer path when no footer metadata is set', async () => {
-    loadFragment.mockResolvedValue(document.createElement('main'));
+  test('does nothing when fetchFragmentHtml returns null', async () => {
+    fetchFragmentHtml.mockResolvedValue(null);
     const block = document.createElement('div');
+    block.textContent = 'original';
     await decorate(block);
-    expect(loadFragment).toHaveBeenCalledWith('/footer');
+    expect(block.textContent).toBe('original');
   });
 });
