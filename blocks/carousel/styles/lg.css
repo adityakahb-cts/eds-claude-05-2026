@@ -1,0 +1,45 @@
+@media (width >= 992px) {
+  .carousel .carousel-prev,
+  .carousel .carousel-next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 2;
+    width: 3rem;
+    height: 3rem;
+    font-size: 1.75rem;
+    border: none;
+    background-color: oklch(100% 0 0deg / 85%);
+    box-shadow: 0 2px 8px oklch(0% 0 0deg / 15%);
+  }
+
+  .carousel .carousel-prev {
+    left: 1rem;
+  }
+
+  .carousel .carousel-next {
+    right: 1rem;
+  }
+
+  .carousel .carousel-controls {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: transparent;
+    padding: 1rem;
+    justify-content: center;
+  }
+
+  .carousel .carousel-dots {
+    flex: none;
+  }
+
+  .carousel .carousel-dot {
+    background-color: oklch(100% 0 0deg / 60%);
+  }
+
+  .carousel .carousel-dot[aria-selected='true'] {
+    background-color: #fff;
+  }
+}

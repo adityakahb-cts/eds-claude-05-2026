@@ -1,0 +1,15 @@
+@media (width >= 632px) {
+  .card.horizontal {
+    flex-direction: row;
+  }
+
+  .card.horizontal .card-image {
+    width: 50%;
+    aspect-ratio: auto;
+    flex-shrink: 0;
+  }
+
+  .card.horizontal .card-body {
+    flex: 1;
+  }
+}

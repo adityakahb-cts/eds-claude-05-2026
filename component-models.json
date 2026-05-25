@@ -1,6 +1,22 @@
 [
   {
-    "id": "header",
+    "id": "accordion",
+    "fields": []
+  },
+  {
+    "id": "alert",
+    "fields": []
+  },
+  {
+    "id": "alert-dialog",
+    "fields": []
+  },
+  {
+    "id": "card",
+    "fields": []
+  },
+  {
+    "id": "carousel",
     "fields": []
   },
   {
@@ -20,5 +36,17 @@
         "description": "Link to the AEM Adaptive Form JSON definition (*.model.json endpoint)"
       }
     ]
+  },
+  {
+    "id": "header",
+    "fields": []
+  },
+  {
+    "id": "offcanvas",
+    "fields": []
+  },
+  {
+    "id": "tabs",
+    "fields": []
   }
 ]

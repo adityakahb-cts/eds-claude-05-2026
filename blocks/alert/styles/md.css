@@ -1,0 +1,13 @@
+@media (width >= 760px) {
+  .alert {
+    padding: var(--spacing-3) var(--spacing-5);
+  }
+
+  .alert .alert-title {
+    font-size: var(--font-size-small);
+  }
+
+  .alert .alert-body {
+    font-size: var(--font-size-p);
+  }
+}

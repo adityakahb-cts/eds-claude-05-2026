@@ -1,0 +1,9 @@
+@media (width >= 760px) {
+  .card .card-body {
+    padding: 1.5rem;
+  }
+
+  .card .card-title {
+    font-size: var(--heading-font-size-m, 1.5rem);
+  }
+}

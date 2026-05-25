@@ -1,0 +1,36 @@
+@media (width >= 992px) {
+  /* ── Vertical layout promoted to sidebar at lg breakpoint ── */
+  .tabs.vertical {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 2rem;
+  }
+
+  .tabs.vertical .tabs-list {
+    flex-flow: column nowrap;
+    border-bottom: none;
+    border-right: 2px solid var(--color-border, #e0e0e0);
+    min-width: 160px;
+    flex-shrink: 0;
+    overflow: visible auto;
+  }
+
+  .tabs.vertical .tabs-tab {
+    border-bottom: none;
+    border-right: 2px solid transparent;
+    margin-bottom: 0;
+    margin-right: -2px;
+    text-align: left;
+    width: 100%;
+  }
+
+  .tabs.vertical .tabs-tab[aria-selected='true'] {
+    border-right-color: var(--link-color, #035fe6);
+    border-bottom-color: transparent;
+  }
+
+  .tabs.vertical .tabs-panel {
+    flex: 1;
+    padding: 0;
+  }
+}

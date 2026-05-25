@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Accordion Block Demo</title>
+    <script type="module" src="/scripts/aem.js"></script>
+    <script type="module" src="/scripts/scripts.js"></script>
+    <link rel="stylesheet" href="/styles/styles.css" />
+    <link rel="stylesheet" href="/blocks/accordion/accordion.css" />
+  </head>
+  <body>
+    <header></header>
+    <main>
+      <div>
+        <div class="accordion block" data-block-name="accordion" data-block-status="initialized">
+          <div>
+            <div>What is Edge Delivery Services?</div>
+            <div><p>Edge Delivery Services is a composable set of services that enables a high degree of flexibility in how you author content for your website.</p></div>
+          </div>
+          <div>
+            <div>How do blocks work?</div>
+            <div><p>Blocks are reusable components that add styling and functionality to content authored in the CMS. Each block exports a <code>decorate()</code> function that transforms the authored HTML into the final rendered output.</p></div>
+          </div>
+          <div>
+            <div>What is da.live?</div>
+            <div><p>DA.live is the document-based authoring interface for AEM Edge Delivery Services. Authors use familiar table-based syntax to define blocks and their content.</p></div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="accordion allow-multiple block" data-block-name="accordion" data-block-status="initialized">
+          <div>
+            <div>First item</div>
+            <div><p>This accordion allows multiple panels to be open at the same time. Click any heading to expand or collapse it independently.</p></div>
+          </div>
+          <div>
+            <div>Second item</div>
+            <div><p>Unlike the default variation, opening this panel does not close the first one. Both can remain expanded simultaneously.</p></div>
+          </div>
+        </div>
+      </div>
+    </main>
+    <footer></footer>
+  </body>
+</html>

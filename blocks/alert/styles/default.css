@@ -1,0 +1,88 @@
+.alert {
+  --alert-bg: var(--color-info-subtle);
+  --alert-border: var(--color-info-border);
+  --alert-text: var(--color-text);
+  --alert-title-color: var(--color-info);
+
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-3);
+  padding: var(--spacing-3) var(--spacing-4);
+  border-radius: var(--border-radius-m);
+  border: 1px solid var(--alert-border);
+  background-color: var(--alert-bg);
+  color: var(--alert-text);
+  position: relative;
+}
+
+.alert.success {
+  --alert-bg: var(--color-success-subtle);
+  --alert-border: var(--color-success-border);
+  --alert-title-color: var(--color-success);
+}
+
+.alert.warning {
+  --alert-bg: var(--color-warning-subtle);
+  --alert-border: var(--color-warning-border);
+  --alert-title-color: var(--color-warning);
+}
+
+.alert.error {
+  --alert-bg: var(--color-danger-subtle);
+  --alert-border: var(--color-danger-border);
+  --alert-title-color: var(--color-danger);
+}
+
+.alert .alert-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.alert .alert-title {
+  display: block;
+  font-weight: 700;
+  color: var(--alert-title-color);
+  margin-block-end: var(--spacing-1);
+  font-size: var(--font-size-small);
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+}
+
+.alert .alert-body {
+  margin: 0;
+  font-size: var(--font-size-small);
+  line-height: 1.5;
+  color: var(--alert-text);
+}
+
+.alert .alert-close {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  padding: 0;
+  border: none;
+  border-radius: var(--border-radius-s);
+  background: transparent;
+  color: var(--alert-text);
+  cursor: pointer;
+  font-size: 1rem;
+  line-height: 1;
+  opacity: 0.6;
+  transition:
+    opacity var(--transition-base),
+    background-color var(--transition-base);
+}
+
+.alert .alert-close:hover {
+  opacity: 1;
+  background-color: oklch(from var(--alert-border) l c h / 20%);
+}
+
+.alert .alert-close:focus-visible {
+  outline: 3px solid var(--alert-border);
+  outline-offset: 2px;
+  opacity: 1;
+}

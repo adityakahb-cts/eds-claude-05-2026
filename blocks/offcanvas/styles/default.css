@@ -1,0 +1,160 @@
+.offcanvas .offcanvas-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.25rem;
+  border: 1px solid var(--color-border, #e0e0e0);
+  border-radius: var(--border-radius-s, 0.25rem);
+  background-color: var(--color-surface, #fff);
+  color: var(--color-text, #1a1a1a);
+  font-size: var(--body-font-size-m, 1rem);
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.offcanvas .offcanvas-trigger:hover {
+  background-color: var(--color-surface-muted, #f5f5f5);
+  border-color: var(--color-border-strong, #bbb);
+}
+
+.offcanvas .offcanvas-trigger:focus-visible {
+  outline: 3px solid var(--color-brand, #0070f3);
+  outline-offset: 2px;
+}
+
+.offcanvas-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 998;
+  background-color: oklch(0% 0 0deg / 50%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.offcanvas-backdrop[hidden] {
+  display: none;
+}
+
+.offcanvas-backdrop.is-open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.offcanvas-panel {
+  position: fixed;
+  z-index: 999;
+  background-color: var(--color-surface, #fff);
+  box-shadow: 0 8px 32px oklch(0% 0 0deg / 20%);
+  transition: transform 0.35s ease;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  display: flex;
+  flex-direction: column;
+}
+
+.offcanvas-panel[hidden] {
+  display: none;
+}
+
+.offcanvas-panel-start {
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: min(320px, 85vw);
+  transform: translateX(-100%);
+}
+
+.offcanvas-panel-start.is-open {
+  transform: translateX(0);
+}
+
+.offcanvas-panel-end {
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: min(320px, 85vw);
+  transform: translateX(100%);
+}
+
+.offcanvas-panel-end.is-open {
+  transform: translateX(0);
+}
+
+.offcanvas-panel-top {
+  top: 0;
+  left: 0;
+  right: 0;
+  max-height: min(400px, 85vh);
+  transform: translateY(-100%);
+}
+
+.offcanvas-panel-top.is-open {
+  transform: translateY(0);
+}
+
+.offcanvas-panel-bottom {
+  bottom: 0;
+  left: 0;
+  right: 0;
+  max-height: min(400px, 85vh);
+  transform: translateY(100%);
+}
+
+.offcanvas-panel-bottom.is-open {
+  transform: translateY(0);
+}
+
+.offcanvas-close {
+  align-self: flex-end;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  margin: 0.75rem 0.75rem 0;
+  padding: 0;
+  border: 1px solid var(--color-border, #e0e0e0);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--color-text, #1a1a1a);
+  cursor: pointer;
+  font-size: 1rem;
+  line-height: 1;
+  transition: background-color 0.2s ease;
+}
+
+.offcanvas-close:hover {
+  background-color: var(--color-surface-muted, #f5f5f5);
+}
+
+.offcanvas-close:focus-visible {
+  outline: 3px solid var(--color-brand, #0070f3);
+  outline-offset: 2px;
+}
+
+.offcanvas-content {
+  padding: 1rem 1.5rem 1.5rem;
+  flex: 1;
+}
+
+.offcanvas-content p {
+  margin: 0 0 0.75rem;
+  font-size: var(--body-font-size-m, 1rem);
+  line-height: 1.6;
+  color: var(--color-text, #1a1a1a);
+}
+
+.offcanvas-content a {
+  color: var(--color-brand, #0070f3);
+  text-decoration: underline;
+}
+
+.offcanvas-content a:focus-visible {
+  outline: 3px solid var(--color-brand, #0070f3);
+  outline-offset: 2px;
+}
