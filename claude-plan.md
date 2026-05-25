@@ -31,6 +31,8 @@ _Status: Architect-reviewed. `Requirements.md` and `__extras/` have been deleted
 
 Build a mobile-first site with a component library modelled on [shadcn/ui](https://ui.shadcn.com/docs/components). Bootstrap-style utilities (borders, grid, flex, display, forms, normalise, buttons, typography) are part of the global CSS foundation. Third-party JS plugins are introduced one at a time, never all at once.
 
+**Performance mandate:** LCP, CLS, INP, and Lighthouse 100 are critical targets, not suggestions. Every PR must pass the `pagespeed` CI gate before merge. Performance regressions block merging.
+
 **Technology stack:**
 
 - Adobe Edge Delivery Services (EDS) — documentation at https://www.aem.live/ (search `site:www.aem.live` to restrict results)
@@ -261,6 +263,25 @@ Use `createOptimizedPicture` (from `scripts/aem.js`) for every authored `<img>` 
 - Contrast: normal text ≥ 4.5:1 (`--color-text` or `--color-{state}-text`); large text / UI components ≥ 3:1; hover/active states ≥ 3:1 against page background
 - **Warning exception:** amber backgrounds require dark text — always pair `background-color: var(--color-warning)` with `color: var(--color-warning-text)`. Never white text on amber.
 - Dark mode is handled automatically by semantic tokens — no per-block `prefers-color-scheme` media queries needed
+
+### Security & Compliance
+
+EDS sites are served over a CDN with headers configured in `metadata.xlsx` in the content repository — not in code. This is the authoritative place for HTTP security headers.
+
+| Header / Concern            | Mechanism                                                                                                                                                                              |
+| --------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Content Security Policy** | Set via `metadata.xlsx` `headers` sheet (`Content-Security-Policy` row). Also backed by CSP `<meta>` in `head.html` (nonce-aem, strict-dynamic) as a defence-in-depth fallback.        |
+| **Anticlickjack**           | Set `X-Frame-Options: SAMEORIGIN` and/or `Content-Security-Policy: frame-ancestors 'self'` in `metadata.xlsx` headers sheet. Both should be present for maximum browser compatibility. |
+| **XSS**                     | Enforced structurally: `innerHTML` is **prohibited** (see golden rule). All DOM construction uses the `html` tagged-template from `scripts/config/html.js`, which never evals strings. |
+| **Sensitive file exposure** | Use `.hlxignore` to prevent non-public paths (config files, draft folders) from being served by the CDN.                                                                               |
+
+**`metadata.xlsx` headers sheet format** (add a `headers` sheet to the content repo):
+
+| URL pattern | X-Frame-Options | Content-Security-Policy | …   |
+| ----------- | --------------- | ----------------------- | --- |
+| `/**`       | `SAMEORIGIN`    | `default-src 'self' …`  |     |
+
+When tightening CSP: add new origins to `metadata.xlsx` first, verify on the feature preview URL (`{branch}--{repo}--{owner}.aem.page`), then merge. Never loosen CSP to fix a breakage — find the missing origin instead.
 
 ### Third-party JS loading strategy
 
@@ -1350,24 +1371,24 @@ Already done (no action):
 
 ## Suggested Improvements
 
-| Area                         | Recommendation                                                                                                                                                                                                   |
-| ---------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Third-party JS**           | Introduce plugins one at a time (Embla first, then others); gate each behind a feature flag comment in `delayed.js` so rollback is a one-line delete                                                             |
-| **Critical CSS**             | Inline above-the-fold hero CSS into a `<style>` block in `head.html` to eliminate render-blocking and guarantee LCP < 2.5 s                                                                                      |
-| **Resource hints**           | Add `<link rel="preconnect">` for external font origins and `<link rel="preload" as="image" fetchpriority="high">` for the LCP hero image (authored via meta tag)                                                |
-| **Image optimisation**       | Enforce `width`/`height` on all `<img>` to prevent CLS; `loading="lazy"` on all below-fold images; `fetchpriority="high"` on the LCP image only                                                                  |
-| **Performance budgets**      | `budget.json` targets: LCP ≤ 2.5 s, CLS ≤ 0.1, INP ≤ 200 ms, TBT ≤ 200 ms. Add to CI `pagespeed` job so regressions break the build                                                                              |
-| **Content Security Policy**  | `head.html` already has a CSP meta tag (nonce-aem, strict-dynamic). Tighten iteratively as the plugin list is finalised; use `.hlxignore` to block non-public paths                                              |
-| **Container queries**        | Prefer `@container` over viewport `@media` for block-internal layout; declare `container-type: inline-size` on the block root; allows blocks to reflow based on their own width                                  |
-| **Fluid type scale**         | `clamp()` already used in `config/typography.css` — **canonical rule**: no hard per-breakpoint `font-size` overrides in any block CSS; all heading sizes derive from `--font-size-*` tokens                      |
-| **SEO / Structured data**    | Use `injectStructuredData(data, container)` from `scripts/config/utils.js` (Phase 2) for JSON-LD on article, product, FAQ pages. `robots.txt` and `sitemap.xml` managed in da.live — never committed             |
-| **Demo blocks (`_` prefix)** | Design system showcase blocks (`_type-specimen`, `_grid-demo`, `_form-demo`, `_color-swatch`) follow the same 6-file structure but are blocked from production via `.hlxignore` or a path guard in `scripts.js`  |
-| **Error resilience**         | Every `decorate()` body wrapped in `try/catch`: `console.error(err)`; preserve authored HTML; `block.dataset.blockStatus = 'failed'` for QA triage                                                               |
-| **`drafts/` convention**     | For local dev without a live CMS page, create static HTML in `drafts/` and start with `--html-folder drafts`. Files use AEM markup structure: `<div class="section"><div class="block-name block">…</div></div>` |
-| **Service Worker**           | Workbox-lite SW for offline shell caching of `styles.css`, `aem.js`, `scripts.js`; register in `delayed.js`; stale-while-revalidate strategy                                                                     |
-| **Component slots**          | Design blocks with optional slot fields (icon, badge, cta); handle absent cells with `?.` optional chaining                                                                                                      |
-| **Token-driven theming**     | All brand customisation via `styles/config/overrides.css`; block-level token overrides on the block selector, never on `:root`                                                                                   |
-| **Shadcn parity**            | Track https://ui.shadcn.com/docs/components; implement each as an EDS block; prioritise: accordion, tabs, dialog, tooltip, badge                                                                                 |
+| Area                                        | Recommendation                                                                                                                                                                                                                                                                                 |
+| ------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Third-party JS**                          | Introduce plugins one at a time (Embla first, then others); gate each behind a feature flag comment in `delayed.js` so rollback is a one-line delete                                                                                                                                           |
+| **Critical CSS**                            | Inline above-the-fold hero CSS into a `<style>` block in `head.html` to eliminate render-blocking and guarantee LCP < 2.5 s                                                                                                                                                                    |
+| **Resource hints**                          | Add `<link rel="preconnect">` for external font origins and `<link rel="preload" as="image" fetchpriority="high">` for the LCP hero image (authored via meta tag)                                                                                                                              |
+| **Image optimisation**                      | Enforce `width`/`height` on all `<img>` to prevent CLS; `loading="lazy"` on all below-fold images; `fetchpriority="high"` on the LCP image only                                                                                                                                                |
+| **Performance budgets**                     | `budget.json` targets: LCP ≤ 2.5 s, CLS ≤ 0.1, INP ≤ 200 ms, TBT ≤ 200 ms. Add to CI `pagespeed` job so regressions break the build                                                                                                                                                            |
+| **Content Security Policy + Anticlickjack** | Primary: configure in `metadata.xlsx` headers sheet (authoritative for CDN-served headers). `head.html` CSP `<meta>` is defence-in-depth. Add `X-Frame-Options: SAMEORIGIN` + `Content-Security-Policy: frame-ancestors 'self'` for anticlickjack. Use `.hlxignore` to block non-public paths. |
+| **Container queries**                       | Prefer `@container` over viewport `@media` for block-internal layout; declare `container-type: inline-size` on the block root; allows blocks to reflow based on their own width                                                                                                                |
+| **Fluid type scale**                        | `clamp()` already used in `config/typography.css` — **canonical rule**: no hard per-breakpoint `font-size` overrides in any block CSS; all heading sizes derive from `--font-size-*` tokens                                                                                                    |
+| **SEO / Structured data**                   | Use `injectStructuredData(data, container)` from `scripts/config/utils.js` (Phase 2) for JSON-LD on article, product, FAQ pages. `robots.txt` and `sitemap.xml` managed in da.live — never committed                                                                                           |
+| **Demo blocks (`_` prefix)**                | Design system showcase blocks (`_type-specimen`, `_grid-demo`, `_form-demo`, `_color-swatch`) follow the same 6-file structure but are blocked from production via `.hlxignore` or a path guard in `scripts.js`                                                                                |
+| **Error resilience**                        | Every `decorate()` body wrapped in `try/catch`: `console.error(err)`; preserve authored HTML; `block.dataset.blockStatus = 'failed'` for QA triage                                                                                                                                             |
+| **`drafts/` convention**                    | For local dev without a live CMS page, create static HTML in `drafts/` and start with `--html-folder drafts`. Files use AEM markup structure: `<div class="section"><div class="block-name block">…</div></div>`                                                                               |
+| **Service Worker**                          | Workbox-lite SW for offline shell caching of `styles.css`, `aem.js`, `scripts.js`; register in `delayed.js`; stale-while-revalidate strategy                                                                                                                                                   |
+| **Component slots**                         | Design blocks with optional slot fields (icon, badge, cta); handle absent cells with `?.` optional chaining                                                                                                                                                                                    |
+| **Token-driven theming**                    | All brand customisation via `styles/config/overrides.css`; block-level token overrides on the block selector, never on `:root`                                                                                                                                                                 |
+| **Shadcn parity**                           | Track https://ui.shadcn.com/docs/components; implement each as an EDS block; prioritise: accordion, tabs, dialog, tooltip, badge                                                                                                                                                               |
 
 ---
 
@@ -1392,6 +1413,34 @@ All four integrations load exclusively in `delayed.js` (3 s post-LCP) to protect
 | Adobe Asset Selector | AEP IMS org + client ID; `asset-selector.js` bootstrap; IMS SDK loaded first        |
 
 **Implementation order:** GTM (lowest risk) → Launch/Tags → Dynamic Media → Asset Selector (depends on IMS).
+
+---
+
+## AGENTS.md Alignment Confirmation
+
+This plan is confirmed to be in-sync with the Adobe-provided `AGENTS.md` in the repository. Key alignment points:
+
+| AGENTS.md requirement                                       | Plan coverage                                                           |
+| ----------------------------------------------------------- | ----------------------------------------------------------------------- |
+| EDS boilerplate base + `*.aem.live` backend                 | Site Goal & Technology section ✅                                       |
+| Never modify `scripts/aem.js`                               | Golden rule — Architecture Standards ✅                                 |
+| Block 6-file convention                                     | Block File Convention section + `/new-block` command ✅                 |
+| Three-phase page loading (eager/lazy/delayed)               | Third-party JS loading strategy table ✅                                |
+| `decorate(block)` 4-step pattern                            | `decorate()` function pattern section ✅                                |
+| Mobile-first CSS, `min-width` breakpoints at 600/900/1200px | CSS standards section (our breakpoints align: 632/760/992/1272/1432) ✅ |
+| `rem` primary unit, `em` for media queries                  | CSS standards section ✅                                                |
+| Accessibility WCAG 2.1 AA                                   | Accessibility standard section ✅                                       |
+| No `innerHTML`                                              | Golden rule + `html` tagged-template ✅                                 |
+| ESLint Airbnb rules                                         | Phase 4 — `eslint.config.js` ✅                                         |
+| `curl` inspection before block assumptions                  | Fragment-loading blocks section ✅                                      |
+| `buildAutoBlocks` in `scripts.js`                           | `decorateMain` call order section ✅                                    |
+| `drafts/` for local test content                            | Suggested Improvements ✅                                               |
+| Publishing process + feature preview URLs                   | Environment strategy + Phase 7 CI ✅                                    |
+| Adobe skills reference                                      | Phase 8 note + Recommended Tooling ✅                                   |
+
+One deliberate extension beyond AGENTS.md:
+
+- **CSS media query syntax**: AGENTS.md says `min-width` at 600/900/1200px. This plan uses modern `width >=` range syntax at 632/760/992/1272/1432px breakpoints (already implemented in `styles/config/`). This is a superset — the breakpoints are tighter and the syntax is current-spec.
 
 ---
 
@@ -1429,6 +1478,8 @@ All four integrations load exclusively in `delayed.js` (3 s post-LCP) to protect
 30. `data-block-status="failed"` appears on a block when `decorate()` throws; original authored HTML preserved; no blank sections
 31. `budget.json` present; CI `pagespeed` job fails if LCP > 2.5 s, CLS > 0.1, or INP > 200 ms
 32. `tests/fragments/` is empty before every commit (no `*-fragment-outerhtml.html` committed)
+    32a. `metadata.xlsx` headers sheet contains `X-Frame-Options: SAMEORIGIN` and `Content-Security-Policy: frame-ancestors 'self'` — anticlickjack verified on preview URL (`curl -I https://{branch}--{repo}--{owner}.aem.page/` shows both headers)
+    32b. `/security-review` passes — 0 `innerHTML` usage, 0 unencoded user-controlled values in HTML attributes
 33. `eslint.config.js` `ignores` contains only `scripts/aem.js` and `scripts/vendor/**` (not `scripts/scripts.js` or `scripts/delayed.js`) after Phase 2
 34. `scripts/scripts.js` exports `html` — blocks can `import { html } from '../../scripts/scripts.js'`
 35. `blocks/fragment/` has all 6 required files (`.js`, `.css`, `.model.js`, `.test.js`, `.spec.js`, `.md`) and `styles/` subdirectory

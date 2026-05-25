@@ -33,15 +33,18 @@
 1. All third party JS plugins will be used as UMD or CDN form, since there is not build process involved. These files must be determined to be loaded either on the header, or lazyly. `delayed.js` also can be used for such scenarios.
 1. da.live mcp server is configured for specific tools. Every authored block must be in sync with its respective content model in the codebase.
 1. Claude to suggest best mcps, plugins, skills, etc. to achieve the best results.
-1. Lighthouse score target is 100 for mobile and desktop viewports.
+1. Performance is the heart of EDS's value proposition — LCP, CLS, INP, and Lighthouse 100 are all flagged as critical targets, not suggestions.
+1. Security, Accessibility, and SEO cover the compliance surface — CSP headers and metadata.xlsx configuration. Look at XSS and Anticlickjack issues.
 1. Analyze styles folder and respective CSS files inside blocks. Check the CSS imports, variables and other related architecture. This must be followed.
 1. Plan a git process - branching, checkout, checkin, PR, merging, review and testing strategy. The main branch must be protected and all new branches must be created from develop branch. Only with a final approval, code must be pushed to main branch.
 1. Plan an environment strategy with keeping dev, qa, uat, prelive and prod environments in mind.
 1. Plan a CI/CD pipeline if needed.
-1. Create custom agents, skills, commands, prompts, hooks etc. for the architecture. Consider the developer and qa usage too. Hooks to fix the lint also must be available. Git Precommit hook works too.
+1. Create custom agents, skills, commands, prompts, hooks etc. for the architecture. Consider the developer and qa role usages. Hooks to fix the lint also must be available. Git Precommit hook works too.
 1. Suggest more improvements to make it robust for fast and scalable EDS website.
 1. Add a future plan to integrate Adobe DTM, Google GTM, Adobe Dynamic Media and Adobe Asset Selector.
 1. As da.live is our CMS for EDS, refer to https://github.com/adobe/skills/tree/main/plugins/aem/edge-delivery-services/skills for any additional skills you need.
+1. Confirm if your plan is in-sync with AGENTS.md provide by Adobe.
+1. Update README.md with specific guidelines for the scrum-masters, product owners, architects, project managers, tech managers, developers, qa team, and devops team for smooth transition into this architecture. New members should feel easy if joined midway during the course of this project.
 
 ## Block implementation
 
