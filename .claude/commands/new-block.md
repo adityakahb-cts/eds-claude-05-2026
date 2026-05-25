@@ -357,9 +357,10 @@ TODO: document lazy loading (`loading="lazy"` on non-LCP images), image optimisa
 TODO: document ARIA usage (`aria-label`, `aria-expanded`, roles), keyboard navigation (Tab order, Enter/Space/Escape), and alt text requirements for images.
 ```
 
-### `component-models.json` — add entry
+### `blocks/$ARGUMENTS/$ARGUMENTS.model.json`
 
-Open `component-models.json` and append inside the top-level array:
+Create the per-block JSON content model. This is the **source of truth** for `component-models.json`.
+Run `/sync-models` after creating this file to regenerate `component-models.json`.
 
 ```json
 {
@@ -371,11 +372,15 @@ Open `component-models.json` and append inside the top-level array:
       "name": "title",
       "label": "Title",
       "required": true,
-      "multi": false
+      "multi": false,
+      "description": "Main heading — required"
     }
   ]
 }
 ```
+
+> **Keep in sync with `$ARGUMENTS.model.js` `CONTENT_MODEL`.** Both define the same fields;
+> the JSON is consumed by da.live / Universal Editor, the JS export is used by block code and tests.
 
 ### `drafts/$ARGUMENTS.html` — local test page
 
@@ -417,27 +422,29 @@ Also create `drafts/$ARGUMENTS-empty.html` — identical but with an empty block
 
 After creating all files, print this table:
 
-| File                                     | Status     |
-| ---------------------------------------- | ---------- |
-| `blocks/$ARGUMENTS/$ARGUMENTS.js`        | ✅ Created |
-| `blocks/$ARGUMENTS/$ARGUMENTS.css`       | ✅ Created |
-| `blocks/$ARGUMENTS/$ARGUMENTS.model.js`  | ✅ Created |
-| `blocks/$ARGUMENTS/$ARGUMENTS.test.js`   | ✅ Created |
-| `blocks/$ARGUMENTS/$ARGUMENTS.spec.js`   | ✅ Created |
-| `blocks/$ARGUMENTS/$ARGUMENTS.md`        | ✅ Created |
-| `blocks/$ARGUMENTS/styles/` (6 partials) | ✅ Created |
-| `component-models.json` entry            | ✅ Added   |
-| `drafts/$ARGUMENTS.html`                 | ✅ Created |
+| File                                         | Status     |
+| -------------------------------------------- | ---------- |
+| `blocks/$ARGUMENTS/$ARGUMENTS.js`            | ✅ Created |
+| `blocks/$ARGUMENTS/$ARGUMENTS.css`           | ✅ Created |
+| `blocks/$ARGUMENTS/$ARGUMENTS.model.js`      | ✅ Created |
+| `blocks/$ARGUMENTS/$ARGUMENTS.model.json`    | ✅ Created |
+| `blocks/$ARGUMENTS/$ARGUMENTS.test.js`       | ✅ Created |
+| `blocks/$ARGUMENTS/$ARGUMENTS.spec.js`       | ✅ Created |
+| `blocks/$ARGUMENTS/$ARGUMENTS.md`            | ✅ Created |
+| `blocks/$ARGUMENTS/styles/` (6 partials)     | ✅ Created |
+| `component-models.json` (via `/sync-models`) | ✅ Updated |
+| `drafts/$ARGUMENTS.html`                     | ✅ Created |
 
 Then remind the developer:
 
 1. **Define the content structure** in `$ARGUMENTS.md` before writing JavaScript
-2. **Start the dev server**: `npx -y @adobe/aem-cli up --no-open --html-folder drafts`
-3. **Inspect authored HTML**: `curl http://localhost:3000/drafts/$ARGUMENTS.plain.html`
-4. **Run unit tests**: `npm run test:unit`
-5. **Run linting**: `npm run lint`
-6. **Run `/block-check $ARGUMENTS`** when done to validate all conventions
-7. **Create da.live showcase page**: `/__blocks/$ARGUMENTS` — author all variations, link from `/__blocks/index`
+2. **Run `/sync-models`** to merge `$ARGUMENTS.model.json` into `component-models.json`
+3. **Start the dev server**: `npx -y @adobe/aem-cli up --no-open --html-folder drafts`
+4. **Inspect authored HTML**: `curl http://localhost:3000/drafts/$ARGUMENTS.plain.html`
+5. **Run unit tests**: `npm run test:unit`
+6. **Run linting**: `npm run lint`
+7. **Run `/block-check $ARGUMENTS`** when done to validate all conventions
+8. **Create da.live showcase page**: `/__blocks/$ARGUMENTS` — author all variations, link from `/__blocks/index`
 
 ---
 
