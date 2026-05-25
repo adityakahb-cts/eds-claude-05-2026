@@ -123,6 +123,7 @@ npx playwright install                                  # first run only: downlo
 | `.claude/prompts/` — 4 reusable prompts                                      | No automation for reviews and sign-offs                                                                                                                                                                                                                                                                                                      |
 | `budget.json`                                                                | No Lighthouse CI performance budget file                                                                                                                                                                                                                                                                                                     |
 | `.test.js` files — `jest` → `vi` migration                                   | All 3 test files use `jest.mock` / `jest.fn()` / `jest.clearAllMocks()` — must be replaced with `vi.mock` / `vi.fn()` / `vi.clearAllMocks()` (import `vi` from `'vitest'`, or rely on globals); `header.test.js` additionally needs assertions updated from `.nav-wrapper`/`nav#nav`/`.nav-hamburger` to the actual `siteheader-*` selectors |
+| `README.md`                                                                  | Missing role-specific onboarding guidelines; no single entry point for new team members (scrum master, PO, architect, PM, tech manager, developer, QA, DevOps)                                                                                                                                                                               |
 
 ---
 
@@ -1289,6 +1290,62 @@ Local: `npx playwright install` (once per machine). CI: uses Docker image — no
 
 ---
 
+## Phase 9 — README.md Role-Specific Onboarding Guide
+
+`README.md` is the project's front door. Every new team member must be able to self-onboard by reading it, regardless of when they join. It is written for **people**, not agents — plain language, no jargon without explanation.
+
+### Audiences and what each section must cover
+
+| Audience                             | Key content                                                                                                                                                                                                                                                                                 |
+| ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Scrum Masters / Project Managers** | Sprint ceremony checklist; branch naming convention by sprint; PR lifecycle (open → review → merge); release calendar; environment promotion sequence (dev → qa → uat → prelive → prod); escalation path                                                                                    |
+| **Product Owners**                   | da.live authoring workflow (create page → preview → publish); content model overview (block tables, what each field controls); preview URLs per environment; how to request a new block or component                                                                                        |
+| **Business Analysts**                | How to write a block content model as a user story; acceptance criteria template for new blocks; mapping business requirements to da.live block tables; who reviews and approves the content model before dev starts                                                                        |
+| **UX / UI Designers**                | Design token system (`styles/config/`); how Figma tokens map to `--color-*`, `--spacing-*`, `--font-size-*` CSS custom properties; breakpoint grid (632/760/992/1272/1432px); dark mode (semantic tokens, not per-component overrides); handoff checklist before a block enters development |
+| **Content Authors**                  | da.live day-to-day workflow (open doc → edit block table → preview → publish); how to use the regen directive system (`{{regen:start;…}}`); block content model reference (what each cell does); how to raise a content-model change request                                                |
+| **Architects / Tech Managers**       | Why EDS (no build step, CDN-first, Lighthouse 100); three-phase loading (eager/lazy/delayed); design token system; CSS cascade (`@layer` order); block convention; security posture (`metadata.xlsx`, CSP)                                                                                  |
+| **Senior Frontend Developers**       | Full dev workflow (clone → `npm install` → `aem up` → localhost:3000); block file convention (6 files + breakpoint partials); `html` tagged-template; regen system; fragment-loader; model.js authoring; PR review responsibilities                                                         |
+| **Junior Frontend Developers**       | Getting started in ≤5 steps; where to find block examples; CSS breakpoint partials; how to run tests; what to check before opening a PR; who to ask for help                                                                                                                                |
+| **Senior QA**                        | Playwright setup (`npx playwright install`); spec file authoring guide; test data isolation rules; axe-core integration; environment sign-off criteria; visual regression baseline process                                                                                                  |
+| **Junior QA**                        | Manual smoke testing checklist per environment; da.live content verification steps; bug filing template (URL + screenshot + steps + expected vs actual); browser matrix                                                                                                                     |
+| **DevOps / Platform**                | GitHub Actions workflows (CI gate, release gate); branch protection rules setup; AEM Code Sync overview; Lighthouse CI (`budget.json`); no Docker in production (CI-only); `metadata.xlsx` header management                                                                                |
+
+### README structure
+
+```
+# {Project Name}
+
+## Quick Start (≤5 commands to a running localhost)
+
+## Architecture Overview (2 paragraphs + diagram link)
+
+## For Your Role
+  - Scrum Master / Project Manager
+  - Product Owner
+  - Business Analyst
+  - UX / UI Designer
+  - Content Author
+  - Architect / Tech Manager
+  - Frontend Developer (Senior)
+  - Frontend Developer (Junior)
+  - QA Engineer (Senior)
+  - QA Engineer (Junior)
+  - DevOps / Platform
+
+## Environment URLs
+
+## Key Links (AGENTS.md, da.live, AEM docs, Figma, Jira/Linear)
+```
+
+### Rules
+
+- Keep the Quick Start section ≤5 commands. A new developer must reach `localhost:3000` without reading anything else.
+- Every role section must answer: "What do I do on day 1?", "What does done look like for me?", "Where do I go when blocked?"
+- Environment URLs section must be generated from the `gh repo view` formula — never hardcoded.
+- Update `README.md` whenever a phase is completed — it is a living document, not a one-time deliverable.
+
+---
+
 ## Recommended Tooling & MCPs
 
 | Tool / MCP                      | Purpose                                                                                                                       |
@@ -1355,6 +1412,10 @@ Phase 8   .claude/settings.json                 ← UPDATE — add PostToolUse E
           .claude/prompts/release-gate.md       ← CREATE
           .claude/prompts/da-content-audit.md   ← CREATE
           .claude/prompts/qa-sign-off.md        ← CREATE (QA: environment sign-off)
+
+Phase 9   README.md                             ← CREATE/OVERWRITE — role-specific onboarding guide
+          Sections: Quick Start, Architecture Overview, per-role guide (8 roles),
+          Environment URLs (formula-generated), Key Links
 
 Already done (no action):
   ✅ .prettierrc.json + format/format:check scripts
@@ -1484,3 +1545,4 @@ One deliberate extension beyond AGENTS.md:
 34. `scripts/scripts.js` exports `html` — blocks can `import { html } from '../../scripts/scripts.js'`
 35. `blocks/fragment/` has all 6 required files (`.js`, `.css`, `.model.js`, `.test.js`, `.spec.js`, `.md`) and `styles/` subdirectory
 36. `blocks/header/header.model.js` and `blocks/footer/footer.model.js` both export `CONTENT_MODEL` with correct `id` values
+37. `README.md` exists and covers all 11 role sections (Scrum Master, PO, BA, UX Designer, Content Author, Architect, Senior FE Dev, Junior FE Dev, Senior QA, Junior QA, DevOps); Quick Start reaches `localhost:3000` in ≤5 commands; environment URLs section uses the `gh repo view` formula (no hardcoded URLs)
