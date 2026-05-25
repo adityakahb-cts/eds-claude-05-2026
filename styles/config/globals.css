@@ -182,8 +182,8 @@ main > .section:first-of-type {
  *   <div class="alert alert--warning" role="alert">Watch out!</div>
  *   <div class="alert alert--success"><p>Changes saved.</p></div>
  *
- *   Via regen directive:
- *   {{regen:start;element:alert;theme:danger;role:alert}}Message{{regen:end}}
+ *   Via spawn directive:
+ *   {{spawn:start;element:alert;theme:danger;role:alert}}Message{{spawn:end}}
  *
  * The 4 px inline-start border provides a semantic colour cue that does not
  * rely on colour alone (WCAG 1.4.1). The subtle background ensures ≥ 3:1
@@ -248,13 +248,13 @@ main > .section:first-of-type {
   --_alert-border: var(--color-warning-border);
 }
 
-/* ── Alert pilled shape (regen radius:pilled) ── */
+/* ── Alert pilled shape (spawn radius:pilled) ── */
 .alert--pilled {
   border-radius: var(--border-radius-pill);
   border-inline-start-width: 1px;
 }
 
-/* ── Image pilled shape (regen element:image radius:pilled) ── */
+/* ── Image pilled shape (spawn element:image radius:pilled) ── */
 img.img--pilled {
   border-radius: var(--border-radius-pill);
   overflow: hidden;

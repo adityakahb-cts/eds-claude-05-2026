@@ -187,7 +187,7 @@ tr:nth-child(even) td {
   line-height: 1.5;
 }
 
-/* ── Heading display scale (regen element:heading style:display*) ── */
+/* ── Heading display scale (spawn element:heading style:display*) ── */
 .heading--display1 {
   font-size: var(--font-size-display1);
 }
@@ -212,7 +212,7 @@ tr:nth-child(even) td {
   font-size: var(--font-size-display6);
 }
 
-/* ── Blockquote attribution (regen element:blockquote) ── */
+/* ── Blockquote attribution (spawn element:blockquote) ── */
 blockquote footer {
   margin-block-start: var(--spacing-2);
   font-size: var(--font-size-small);

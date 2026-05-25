@@ -9,6 +9,18 @@
 1. 1 senior qa
 1. 2 junior qa
 
+## Content
+
+1. https://da.live/#/adityakahb-cts/eds-claude-05-2026 is the content url for da.live mcp reference.
+1. `__authorables` folder must be created for all `spawn` directive implementations - like button, images, links, paragraphs etc. Add all possible variations for every spawn type.
+1. `__experience-fragments` folder must be created for `header`, `footer` and `nav` blocks.
+1. `__content-fragments` folder must be created for all other blocks which will be imported via `fragment` block.
+1. `__blocks` folder must be created for all the other blocks to showcase the sync between the respective authoring and the code.
+1. Indiviual pages can be directly created or can be part of other child folders as suggested by aem.live.
+1. All spawns (like buttons, images, links, paragraphs), all blocks (hero-banner, teasers), all pages (home, detail, landing) etc. should be separate, and not part of one index page. Although all variations of a block can be part of one index page. The code must be smart enough to recognize when to create a block, when to update a block and when to add a variation to the block.
+1. The pages are supposed to use the logical arrangement of the blocks from `__authorables`, `__experience-fragments`, `__content-fragments` and `__blocks` folder.
+1. For placeholder images, use https://placehold.co/ with sizes required by the block, and random colors.
+
 ## Global implementation
 
 1. The goal is to create a mobile first designed site with various components as listed in https://ui.shadcn.com/docs/components
@@ -42,7 +54,7 @@
 1. Create custom agents, skills, commands, prompts, hooks etc. for the architecture. Consider the developer and qa role usages. Hooks to fix the lint also must be available. Git Precommit hook works too.
 1. Suggest more improvements to make it robust for fast and scalable EDS website.
 1. Add a future plan to integrate Adobe DTM, Google GTM, Adobe Dynamic Media and Adobe Asset Selector.
-1. As da.live is our CMS for EDS, refer to https://github.com/adobe/skills/tree/main/plugins/aem/edge-delivery-services/skills for any additional skills you need.
+1. As da.live is our CMS for EDS, refer to https://github.com/adobe/skills/tree/main/plugins/aem/edge-delivery-services/skills for any additional skills you need. Look into `content-driven-development`, `content-modeling`, `code-review`, `authoring-analysis` etc. skills.
 1. Confirm if your plan is in-sync with AGENTS.md provide by Adobe.
 1. Update README.md with specific guidelines for the scrum-masters, product owners, architects, project managers, tech managers, developers, qa team, and devops team for smooth transition into this architecture. New members should feel easy if joined midway during the course of this project.
 
@@ -59,6 +71,10 @@
 1. Unless extremely necessary, `{blockname}.js` and `{blockname}.css` should use imports from `scripts` and `styles` folders. This is to keep the UI uniform and reduce duplication.
 1. `{blockname}.test.js` is the vitest file for unit testing the `{blockname}.js` file.
 1. `{blockname}.spec.js` is the playwright e2e test file testing the `{blockname}.js` file.
-1. `{blockname}.model.js` is the helper file containing the content model and markup of the `{blockname}`, both will be exported to `{blockname}.js`. This content model should match with the block defined in the da.live document file. Both content model and markup can be used for unit testing. Markup can be used for block's DOM structure, instead of using "createElement", "append" and "appendTo" etc. methods.
+1. `{blockname}.model.js` is the helper file containing the content model and markup of the `{blockname}`, both will be exported to `{blockname}.js`. This content model should match with the block defined in the da.live document file. Content model should clearly define the optional fields and mandatory fields. The variations should be clearly called out. Both content model and markup can be used for unit testing. Markup can be used for block's DOM structure, instead of using "createElement", "append" and "appendTo" etc. methods.
 1. Again, innerHTML must not be used for the block markup. Refer to the "html" function defined in "\_\_extras/eds-claude/aem.js".
-1. `{blockname}.md` is the block definition file containing all the business requirements and usage of the `{blockname}`.
+1. `{blockname}.md` is the block definition file containing all the business requirements, authoring guidelines, information about `{blockname}` variations, and usage of the `{blockname}`.
+
+# `fragment` block
+
+1. It does not need css file and content-model. It does not have any UI.

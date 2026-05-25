@@ -23,9 +23,11 @@ Then open **http://localhost:3000** in your browser.
 
 ## Architecture Overview
 
-Adobe Edge Delivery Services is a CDN-first publishing platform with no build step. Authors create content in da.live (or SharePoint / Google Drive). That content is converted to clean HTML by Adobe's backend and served from the edge. Your JavaScript and CSS live in this repository and are applied on top. Because there is no bundler, every script is a native ES module and every network request is a plain HTTP fetch — which is why Lighthouse 100 is achievable by default.
+Adobe Edge Delivery Services is a CDN-first publishing platform with no build step. Authors create content in da.live. That content is converted to clean HTML by Adobe's backend and served from the edge. Your JavaScript and CSS live in this repository and are applied on top. Because there is no bundler, every script is a native ES module and every network request is a plain HTTP fetch — which is why Lighthouse 100 is achievable by default.
 
-Pages are loaded in three phases to keep the site fast. The **eager phase** runs immediately: it decorates the DOM into sections and blocks, then loads only the first section so the Largest Contentful Paint (LCP) image or heading appears as quickly as possible. The **lazy phase** follows after LCP is done: it loads the header, footer, and all below-the-fold content. The **delayed phase** (triggered 3 seconds after page load) handles analytics, scroll libraries like Lenis, and anything else that is safe to defer. Every block is a self-contained folder inside `blocks/` containing a JavaScript decorator, a CSS file, a content model document, a model file for da.live, and a test file — the "6-file convention". Design tokens (colors, typography, spacing, breakpoints) live in `styles/config/` as CSS custom properties (variables) and are the single source of truth for the visual language.
+Pages are loaded in three phases to keep the site fast. The **eager phase** runs immediately: it decorates the DOM into sections and blocks, then loads only the first section so the Largest Contentful Paint (LCP) image or heading appears as quickly as possible. The **lazy phase** follows after LCP is done: it loads the header, footer, and all below-the-fold content. The **delayed phase** (triggered 3 seconds after page load) handles analytics, scroll libraries like Lenis, and anything else that is safe to defer. Every block is a self-contained folder inside `blocks/` containing a JavaScript decorator, a CSS file, a content model document, a model file for da.live, and test files — the "6-file convention". Design tokens (colors, typography, spacing, breakpoints) live in `styles/config/` as CSS custom properties and are the single source of truth for the visual language.
+
+Content in da.live is organized across four structural folders: **`__authorables/`** (reference pages for every spawn element type — buttons, images, alerts, etc., with all variations), **`__experience-fragments/`** (nav and footer shared by all pages), **`__content-fragments/`** (reusable sections imported via the `fragment` block), and **`__blocks/`** (one showcase page per block). Site pages — home, detail, landing — live in the root and compose blocks from all four folders. Every spawn type and every block has its own dedicated page; nothing is bundled into a single index.
 
 ---
 
@@ -55,19 +57,29 @@ Sprint ceremonies: daily standup, sprint planning at the start of each sprint, b
 
 ### Product Owner
 
-**Day 1:** Get access to [da.live](https://da.live/) using your Adobe ID. Open the preview URL for the current branch: `https://main--eds-claude-05-2026--adityakahb-cts.aem.page/`. Browse the site to understand what has been built. Identify any pages that need new or updated content and create them in da.live. Ask the Frontend Manager for a block catalog showing what blocks are available.
+**Day 1:** Get access to [da.live](https://da.live/#/adityakahb-cts/eds-claude-05-2026) using your Adobe ID. Open the preview URL for the current branch: `https://main--eds-claude-05-2026--adityakahb-cts.aem.page/`. Browse the site to understand what has been built. Open `/__blocks/index` in da.live to see the block catalog and available content models.
 
 **Done means:** Content you have authored in da.live has been previewed (click "Preview" in da.live), reviewed on the preview URL, and published (click "Publish" in da.live). Published content appears on the live site within seconds. New feature requests have been written as user stories, reviewed by the BA and Frontend Manager, and added to the backlog.
 
 **When blocked:** If a page preview looks wrong, check whether the right block name was used in the content table. If a block does not exist yet, file a request as a GitHub Issue describing what the block should do, attaching a screenshot or sketch. If da.live is not responding, check [Adobe Status](https://status.adobe.com/).
 
+**Content folder overview:**
+
+| Folder                    | What it contains                                         |
+| ------------------------- | -------------------------------------------------------- |
+| `__authorables/`          | Design-system reference: all spawn element variations    |
+| `__experience-fragments/` | Nav and footer shared across all pages                   |
+| `__content-fragments/`    | Reusable page sections included via the `fragment` block |
+| `__blocks/`               | Block showcase: one page per available block             |
+
 **Content workflow:**
 
-1. Open da.live and navigate to the page you want to edit.
+1. Open [da.live](https://da.live/#/adityakahb-cts/eds-claude-05-2026) and navigate to the page you want to edit.
 2. Edit the document — use block tables to structure content (e.g., a `hero` table for a hero block).
-3. Click **Preview** — da.live generates a preview URL: `https://main--eds-claude-05-2026--adityakahb-cts.aem.page/your-page`.
-4. Review the preview in your browser.
-5. Click **Publish** to push to the live site.
+3. For placeholder images, use `https://placehold.co/{width}x{height}` until real assets are ready.
+4. Click **Preview** — da.live generates a preview URL: `https://main--eds-claude-05-2026--adityakahb-cts.aem.page/your-page`.
+5. Review the preview in your browser.
+6. Click **Publish** to push to the live site.
 
 ---
 
@@ -122,13 +134,15 @@ Acceptance criteria:
 | Grid           | `styles/config/grid.css`       | `--grid-columns`, `--grid-gap`                              |
 | Buttons        | `styles/config/buttons.css`    | `--button-border-radius`, `--button-padding`                |
 
-**Breakpoints (mobile-first, `min-width`):**
+**Breakpoints (mobile-first, `width >=` range syntax):**
 
-| Name   | Value  | Typical usage                    |
-| ------ | ------ | -------------------------------- |
-| Small  | 600px  | Tablet portrait                  |
-| Medium | 900px  | Tablet landscape / small desktop |
-| Large  | 1200px | Desktop                          |
+| Token | Value  | CSS partial | Typical usage                 |
+| ----- | ------ | ----------- | ----------------------------- |
+| `sm`  | 632px  | `sm.css`    | Tablet portrait               |
+| `md`  | 760px  | `md.css`    | Tablet landscape              |
+| `lg`  | 992px  | `lg.css`    | Small desktop                 |
+| `xl`  | 1272px | `xl.css`    | Standard desktop              |
+| `xxl` | 1432px | `xxl.css`   | Wide desktop / large monitors |
 
 **Dark mode:** Use semantic tokens from `themes.css` (e.g., `--color-background`, `--color-text`) rather than raw color values. The `@media (prefers-color-scheme: dark)` block in `themes.css` automatically maps these to the dark palette.
 
@@ -145,20 +159,56 @@ Acceptance criteria:
 
 ### Content Author
 
-**Day 1:** Get access to [da.live](https://da.live/) using your Adobe ID. Open an existing page to see how it is structured. Notice that content is organized as a Google-Docs-style document where you insert tables to add structured blocks (carousels, cards, heroes, etc.). Review the block catalog in `component-models.json` to learn what blocks are available and what each cell does.
+**Day 1:** Get access to [da.live](https://da.live/#/adityakahb-cts/eds-claude-05-2026) using your Adobe ID. Open the `__blocks/index` page to see what blocks are available and how they are authored. Notice that content is organized as a Google-Docs-style document where you insert tables to add structured blocks (carousels, cards, heroes, etc.). Review the block catalog in `component-models.json` to learn what each cell does.
 
 **Done means:** Pages you author in da.live look correct when previewed at `https://main--eds-claude-05-2026--adityakahb-cts.aem.page/your-page`. Text, images, links, and interactive blocks all render as expected. You have clicked **Publish** to push content live, and verified it on `https://main--eds-claude-05-2026--adityakahb-cts.aem.live/your-page`.
 
 **When blocked:** If a preview does not match your expectation, check that the block table name exactly matches the block catalog. Block names are case-sensitive and hyphenated (e.g., `cards`, `hero`, `accordion`). If a block is missing entirely, file a request via the BA. For da.live access issues, contact your Adobe admin.
 
+**da.live folder structure:**
+
+| Folder                    | What lives here                                                                                                | You can edit?                |
+| ------------------------- | -------------------------------------------------------------------------------------------------------------- | ---------------------------- |
+| `__authorables/`          | Reference pages: all button, image, link, paragraph, badge, alert, heading, blockquote, and divider variations | View only                    |
+| `__experience-fragments/` | Nav and footer fragments                                                                                       | Yes — with Senior Dev review |
+| `__content-fragments/`    | Shared content imported into pages via the `fragment` block                                                    | Yes                          |
+| `__blocks/`               | Block showcase pages (one page per block)                                                                      | View + new pages             |
+| Root / other folders      | Actual site pages (home, detail, landing, etc.)                                                                | Yes                          |
+
+**Separation rule — what gets its own page vs what shares a page:**
+
+| These are on **separate pages**          | These are on the **same page**                           |
+| ---------------------------------------- | -------------------------------------------------------- |
+| Anchor vs Button (different spawn types) | All anchor variations (primary, outline, sm, lg, pill…)  |
+| Hero block vs Teaser block               | All hero variations (default, dark, full-bleed, compact) |
+| `/home` vs `/detail` vs `/landing`       | —                                                        |
+
+Every spawn element type has one page in `__authorables/` with all its variations. Every block has one page in `__blocks/` with all its variations. Separate page types are separate pages.
+
 **Day-to-day workflow:**
 
 1. Open da.live → navigate to your page.
 2. Insert a block table: the first cell is the block name, rows below are the content fields.
-3. Click **Preview** to see your changes at the `.aem.page` URL.
-4. Click **Publish** to push live.
+3. For images you do not have yet, use a placeholder from [placehold.co](https://placehold.co/) — e.g., `https://placehold.co/800x450/1e40af/ffffff` (width × height, background hex, text hex). Size to the block's documented slot dimensions.
+4. Click **Preview** to see your changes at the `.aem.page` URL.
+5. Click **Publish** to push live.
 
-**Regen directives** — If you see `{{regen:start;element:hero}}` in a document, that is a signal to an AI assistant to regenerate that section. Do not delete or move these markers. They look like code but are purely instructional tags for automated tooling.
+**Spawn directives** — inline styled elements can be authored directly in the document body using spawn markers. Example for a primary button:
+
+```
+{{spawn:start;element:anchor;theme:primary;href:/contact}}Get in touch{{spawn:end}}
+```
+
+The full list of spawn element types and supported parameters is documented in `/__authorables/` on da.live (one page per element type). Do not delete or move spawn markers — they are processed by the page decoration script.
+
+**Placeholder images:** Use [placehold.co](https://placehold.co/) during authoring until production assets are ready:
+
+```
+https://placehold.co/800x450        — landscape 16:9
+https://placehold.co/400x400        — square thumbnail
+https://placehold.co/1200x400       — wide banner
+https://placehold.co/400x400/7c3aed/ffffff — custom colour
+```
 
 **Content model reference:** Each block's expected table structure is documented in `blocks/{blockname}/{blockname}.md`. If you need a content model changed (e.g., add a new optional field to a block), open a GitHub Issue describing what you need and tag the BA and Frontend Manager.
 
@@ -231,11 +281,23 @@ git push -u origin feat/my-feature
 # open PR to develop on GitHub
 ```
 
-**Block authoring (`model.js`):** Use the `html` tagged-template from `scripts/config/html.js` for all markup templates — never `innerHTML` or `/* html */` strings. Export `CONTENT_MODEL` (synced to `component-models.json`) and `*_MARKUP` (DOM templates).
+**Block authoring (`model.js`):** Use the `html` tagged-template from `scripts/config/html.js` for all markup templates — never `innerHTML` or `/* html */` strings. Export `CONTENT_MODEL` and `*_MARKUP` (DOM templates). Every `CONTENT_MODEL` field must include `required: true/false`. All named variations must be listed in a `variations` array with their da.live authoring syntax. The `fragment` block is the only exception — no `CONTENT_MODEL`, no CSS.
+
+**Block documentation (`.md`):** Each block's `.md` must contain 8 sections: Overview, Content Model table, Field Definitions table, Variations (one table per variant), Authoring Guidelines, CSS Classes Generated, Performance Notes, Accessibility. Use `/new-block` to scaffold the correct template.
+
+**Smart block lifecycle — always check before writing:**
+
+| Situation                                 | Command / Action                                                                                                           |
+| ----------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| Block does not exist                      | `/new-block {name}` → CREATE mode (all 6 files + `styles/` + draft HTML)                                                   |
+| Block exists, need to change JS/CSS/model | `/new-block {name}` → UPDATE mode (edit specific files only; never overwrite tests)                                        |
+| Block exists, need a new visual variant   | `/new-block {name} {variant}` → ADD_VARIATION mode (BEM modifier `.{name}--{variant}`, CSS, `.md` table, da.live instance) |
+
+Block variations (`.hero--dark`, `.hero--full-bleed`) belong on the **same** `/__blocks/hero` da.live page — never as a separate block directory or separate da.live page.
 
 **Fragment-loader pattern:** Use `fetchFragmentHtml(loadFragmentFn, metaKey, defaultPath)` from `scripts/config/fragment-loader.js` to load header and footer content from da.live fragments. Do not hardcode fragment paths.
 
-**Regen system:** `decorateRegenElements` in `scripts/config/global-decorators.js` handles `{{regen:start;element:…}}` directives. Do not reimplement this logic in blocks.
+**Spawn system:** `decorateSpawnElements` in `scripts/config/global-decorators.js` handles `{{spawn:start;element:…}}` directives. Do not reimplement this logic in blocks.
 
 **PR review responsibilities:** All `feat/*` → `develop` PRs require one Senior Dev review plus Frontend Manager approval. Check: lint passes, tests pass, Lighthouse 100, no `innerHTML`, JSDoc on all exported functions, block `.md` updated if content model changed.
 
@@ -278,12 +340,22 @@ Then read `AGENTS.md` — especially the JavaScript code standards and the `deco
 
 **CSS rule:** All selectors in a block's `.css` file must be scoped to the block. Write `.hero .title`, not just `.title`. Never use classes ending in `-container` or `-wrapper` on the block root.
 
+**Smart block lifecycle for junior devs — always check first:**
+
+```sh
+ls blocks/my-block/ 2>/dev/null && echo "EXISTS — use UPDATE or ADD_VARIATION" || echo "NEW — use CREATE"
+```
+
+- `NEW`: run `/new-block my-block` in Claude Code — it scaffolds all 6 files automatically
+- `EXISTS` + change needed: run `/new-block my-block` and choose UPDATE — edit only the relevant files
+- `EXISTS` + new variant: run `/new-block my-block dark` — adds BEM modifier, CSS rules, and `.md` variation table
+
 **Before opening a PR, check:**
 
 - [ ] `npm run lint` — zero errors
 - [ ] `npm run test:unit` — all tests pass
 - [ ] Block renders at `http://localhost:3000` without console errors
-- [ ] Run `/block-check` in Claude Code to catch convention issues
+- [ ] Run `/block-check {blockname}` in Claude Code to validate all 6 files, no `innerHTML`, scoped CSS
 - [ ] PR description includes the feature preview URL for your branch
 
 ---
@@ -469,11 +541,15 @@ To construct a URL for any branch, use the pattern:
 | Developer tutorial                    | https://www.aem.live/developer/tutorial                                             |
 | Markup, sections, blocks reference    | https://www.aem.live/developer/markup-sections-blocks                               |
 | Web performance guide                 | https://www.aem.live/developer/keeping-it-100                                       |
-| Adobe skills reference (EDS)          | https://github.com/adobe/skills/tree/main/plugins/aem/edge-delivery-services/skills |
+| Adobe EDS skills (all)                | https://github.com/adobe/skills/tree/main/plugins/aem/edge-delivery-services/skills |
+| `content-driven-development` skill    | Use before writing block JS — confirms authored structure drives implementation     |
+| `content-modeling` skill              | Interactive CONTENT_MODEL builder with required/optional/variation annotations      |
+| `code-review` skill                   | Automated block diff review — innerHTML, JSDoc, CSS scope, CONTENT_MODEL sync       |
+| `authoring-analysis` skill            | Audits authored da.live pages for missing fields and model drift                    |
 | AEM Code Sync GitHub App              | https://github.com/apps/aem-code-sync                                               |
 | Adobe Status                          | https://status.adobe.com/                                                           |
 | AI coding agents tips                 | https://www.aem.live/developer/ai-coding-agents                                     |
 
 ---
 
-_Last updated: 2026-05-25 · Phase 9 complete. Update this file whenever a new phase is completed or a new block, workflow, or team role is added._
+_Last updated: 2026-05-25 · `fragment` block exception applied (no CSS, no CONTENT_MODEL, removed from component-models.json); `model.js` standard now requires explicit `required` on every field and a `variations` array; `.md` standard now requires 8 sections including Authoring Guidelines and Variations; four Adobe EDS skills added (content-driven-development, content-modeling, code-review, authoring-analysis). Update this file whenever a new phase is completed or a new block, workflow, or team role is added._
