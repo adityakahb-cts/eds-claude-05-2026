@@ -1,0 +1,9 @@
+@media (width >= 992px) {
+  .card.featured {
+    min-height: 400px;
+  }
+
+  .card.featured .card-body {
+    min-height: 360px;
+  }
+}

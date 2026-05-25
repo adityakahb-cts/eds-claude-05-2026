@@ -1,0 +1,17 @@
+@media (width >= 760px) {
+  .accordion .accordion-summary {
+    padding: 1.25rem 1.5rem;
+    font-size: var(--body-font-size-l, 1.125rem);
+  }
+
+  .accordion .accordion-content p,
+  .accordion .accordion-content ul,
+  .accordion .accordion-content ol {
+    padding: 0 1.5rem 1.25rem;
+  }
+
+  .accordion .accordion-content ul,
+  .accordion .accordion-content ol {
+    padding-left: 3rem;
+  }
+}

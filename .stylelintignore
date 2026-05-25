@@ -1,1 +1,6 @@
 styles/vendor/**
+# Upstream form block (adobe-rnd/aem-boilerplate-forms) — do not lint
+blocks/form/form.css
+blocks/form/components/**
+# Adobe Confidential — upstream editor support
+styles/config/form-editor-support.css

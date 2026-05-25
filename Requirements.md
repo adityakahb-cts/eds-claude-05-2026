@@ -78,3 +78,7 @@
 # `fragment` block
 
 1. It does not need css file and content-model. It does not have any UI.
+
+# EDS forms
+
+1. EDS forms are directly taken from https://github.com/adobe-rnd/aem-boilerplate-forms. Its respective CSS and JS files are available.

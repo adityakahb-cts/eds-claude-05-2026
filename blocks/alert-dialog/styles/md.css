@@ -1,0 +1,15 @@
+@media (width >= 760px) {
+  .alert-dialog .alert-dialog-modal {
+    max-width: 32rem;
+  }
+
+  .alert-dialog .alert-dialog-body p {
+    font-size: var(--font-size-p);
+  }
+
+  .alert-dialog .alert-dialog-ok,
+  .alert-dialog .alert-dialog-confirm,
+  .alert-dialog .alert-dialog-cancel {
+    font-size: var(--font-size-p);
+  }
+}

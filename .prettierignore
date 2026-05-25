@@ -2,3 +2,21 @@ node_modules
 *.min.js
 helix-importer-ui
 package-lock.json
+# Upstream form block (adobe-rnd/aem-boilerplate-forms) — do not reformat
+blocks/form/form.js
+blocks/form/form.css
+blocks/form/util.js
+blocks/form/mappings.js
+blocks/form/submit.js
+blocks/form/transform.js
+blocks/form/functions.js
+blocks/form/constant.js
+blocks/form/rules
+blocks/form/rules-doc
+blocks/form/components
+blocks/form/models
+blocks/form/integrations
+blocks/form/_form.json
+# Adobe Confidential — upstream editor support
+scripts/config/form-editor-support.js
+styles/config/form-editor-support.css

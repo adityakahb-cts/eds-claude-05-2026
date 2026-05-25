@@ -1,0 +1,10 @@
+@media (width >= 760px) {
+  .offcanvas-panel-start,
+  .offcanvas-panel-end {
+    width: min(400px, 50vw);
+  }
+
+  .offcanvas-content {
+    padding: 1.25rem 2rem 2rem;
+  }
+}

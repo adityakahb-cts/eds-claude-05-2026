@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Tabs Block Demo</title>
+    <script type="module" src="/scripts/aem.js"></script>
+    <script type="module" src="/scripts/scripts.js"></script>
+    <link rel="stylesheet" href="/styles/styles.css" />
+    <link rel="stylesheet" href="/blocks/tabs/tabs.css" />
+  </head>
+  <body>
+    <header></header>
+    <main>
+      <div>
+        <div class="tabs block" data-block-name="tabs" data-block-status="initialized">
+          <div>
+            <div>Overview</div>
+            <div><p>This is the overview tab content. It contains introductory information about the topic and sets the context for the other tabs.</p></div>
+          </div>
+          <div>
+            <div>Features</div>
+            <div><p>Key features are listed here. Each feature is explained in detail with examples and use cases to help you get the most out of the product.</p></div>
+          </div>
+          <div>
+            <div>Getting Started</div>
+            <div><p>Follow these steps to get started quickly with the product. The setup process takes less than five minutes and requires no prior experience.</p></div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="tabs pills block" data-block-name="tabs" data-block-status="initialized">
+          <div>
+            <div>Design</div>
+            <div><p>Design principles and guidelines for building consistent experiences across the site. Covers typography, colour, spacing, and component patterns.</p></div>
+          </div>
+          <div>
+            <div>Development</div>
+            <div><p>Developer documentation and API references. Includes block authoring conventions, JavaScript patterns, and CSS guidelines.</p></div>
+          </div>
+          <div>
+            <div>Content</div>
+            <div><p>Content strategy and authoring guidelines. Explains how to structure pages, use blocks effectively, and write for the web.</p></div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="tabs vertical block" data-block-name="tabs" data-block-status="initialized">
+          <div>
+            <div>Overview</div>
+            <div><p>Overview content displayed to the right of the tab list on wider screens. On mobile and tablet the tabs display as a horizontal scrollable bar.</p></div>
+          </div>
+          <div>
+            <div>Details</div>
+            <div><p>Detailed content for the second tab. This layout is well-suited for documentation pages where the left sidebar acts as a navigation aid.</p></div>
+          </div>
+          <div>
+            <div>Reference</div>
+            <div><p>Reference documentation, API specs, or field definitions go here. The vertical layout keeps the labels visible while the user reads long content.</p></div>
+          </div>
+        </div>
+      </div>
+    </main>
+    <footer></footer>
+  </body>
+</html>
