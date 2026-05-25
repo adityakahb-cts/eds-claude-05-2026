@@ -11,11 +11,39 @@ const compat = new FlatCompat({
 
 export default [
   {
-    ignores: ['helix-importer-ui/**', '**/*.min.js', '__extras/**', 'scripts/aem.js', 'scripts/vendor/**'],
+    ignores: [
+      'helix-importer-ui/**',
+      '**/*.min.js',
+      '__extras/**',
+      'scripts/aem.js',
+      'scripts/vendor/**',
+      // Upstream form block (adobe-rnd/aem-boilerplate-forms) — do not lint
+      'blocks/form/form.js',
+      'blocks/form/util.js',
+      'blocks/form/mappings.js',
+      'blocks/form/submit.js',
+      'blocks/form/transform.js',
+      'blocks/form/functions.js',
+      'blocks/form/constant.js',
+      'blocks/form/rules/**',
+      'blocks/form/rules-doc/**',
+      'blocks/form/components/**',
+      'blocks/form/models/**',
+      'blocks/form/integrations/**',
+      // Adobe Confidential — upstream editor support file
+      'scripts/config/form-editor-support.js',
+    ],
   },
   ...compat.extends('airbnb-base', 'prettier'),
   {
-    files: ['eslint.config.js', 'vitest.config.js', 'playwright.config.js', '**/*.test.js', 'tests/**/*.js'],
+    files: [
+      'eslint.config.js',
+      'vitest.config.js',
+      'playwright.config.js',
+      '**/*.test.js',
+      '**/*.spec.js',
+      'tests/**/*.js',
+    ],
     languageOptions: {
       globals: {
         ...globals.jest,

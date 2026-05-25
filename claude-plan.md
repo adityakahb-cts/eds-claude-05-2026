@@ -1628,6 +1628,49 @@ To override the default `/nav` or `/footer` path for a specific page, add a `met
 
 ---
 
+## Phase 12 — EDS Form Block Integration
+
+**Source:** https://github.com/adobe-rnd/aem-boilerplate-forms  
+**Status:** ✅ DONE
+
+### What was done
+
+Integrated the upstream AEM EDS form block into the project. The form block is a special upstream exception — like `fragment`, its field definitions come from an external JSON endpoint (AEM Forms), not from da.live authored table rows.
+
+### Files created / modified
+
+| File                                    | Action     | Notes                                                                                  |
+| --------------------------------------- | ---------- | -------------------------------------------------------------------------------------- |
+| `blocks/form/form.model.js`             | ✅ Created | Documentation-only — no CONTENT_MODEL (upstream exception)                             |
+| `blocks/form/form.md`                   | ✅ Created | Full 8-section documentation                                                           |
+| `blocks/form/form.test.js`              | ✅ Created | Vitest unit tests (23 tests, all passing)                                              |
+| `blocks/form/form.spec.js`              | ✅ Created | Playwright e2e tests                                                                   |
+| `drafts/form.html`                      | ✅ Created | Local dev test page                                                                    |
+| `drafts/form-empty.html`                | ✅ Created | Local dev empty-block test page                                                        |
+| `scripts/config/form-editor-support.js` | ✅ Fixed   | Fixed `./aem.js` → `../aem.js` and CSS path to `styles/config/form-editor-support.css` |
+| `scripts/scripts.js`                    | ✅ Updated | Added form-editor-support lazy loading when form blocks present                        |
+| `component-models.json`                 | ✅ Updated | Added `form` entry with `formRef` field                                                |
+| `eslint.config.js`                      | ✅ Updated | Added upstream form files to ignores; added `**/*.spec.js` to test config              |
+| `.prettierignore`                       | ✅ Updated | Added upstream form files                                                              |
+| `.stylelintignore`                      | ✅ Updated | Added upstream form CSS files                                                          |
+
+### Form block exception rules
+
+- **No `CONTENT_MODEL`** — form fields come from AEM Forms JSON, not da.live
+- **Has CSS and UI** (unlike `fragment` which has neither)
+- `component-models.json` entry has only the `formRef` link field
+- Upstream JS/CSS files (form.js, form.css, util.js, components/\*\*, etc.) are excluded from ESLint, Prettier, and Stylelint
+- `form-editor-support.js` loads lazily only when `.form.block` exists on the page
+
+### Verification
+
+```sh
+npm run test:unit  # 23/23 pass
+npm run lint       # 0 errors
+```
+
+---
+
 ## Phase 11 — Individual da.live Content Pages
 
 > **Prerequisite:** Phase 10 seed pages must exist ✅ (they do).

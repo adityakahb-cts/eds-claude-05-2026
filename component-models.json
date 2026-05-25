@@ -6,5 +6,19 @@
   {
     "id": "footer",
     "fields": []
+  },
+  {
+    "id": "form",
+    "fields": [
+      {
+        "component": "text-input",
+        "valueType": "string",
+        "name": "formRef",
+        "label": "Form Reference URL",
+        "required": true,
+        "multi": false,
+        "description": "Link to the AEM Adaptive Form JSON definition (*.model.json endpoint)"
+      }
+    ]
   }
 ]

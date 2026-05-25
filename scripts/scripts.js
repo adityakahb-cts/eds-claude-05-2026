@@ -149,6 +149,13 @@ async function loadLazy(doc) {
 
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
   loadFonts();
+
+  // Load form editor support when form blocks are present (AUE edit mode only at runtime)
+  if (main.querySelector('.form.block')) {
+    import('./config/form-editor-support.js').then(({ attachEventListners }) => {
+      attachEventListners(main);
+    });
+  }
 }
 
 /**

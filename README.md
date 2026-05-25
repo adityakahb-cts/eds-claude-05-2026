@@ -212,6 +212,8 @@ https://placehold.co/400x400/7c3aed/ffffff — custom colour
 
 **Content model reference:** Each block's expected table structure is documented in `blocks/{blockname}/{blockname}.md`. If you need a content model changed (e.g., add a new optional field to a block), open a GitHub Issue describing what you need and tag the BA and Frontend Manager.
 
+**Form blocks:** Author as a table with `form` in the first cell and the AEM Form URL in the second row. Field definitions come from AEM Forms — contact the Forms team for the form URL.
+
 ---
 
 ### Architect / Tech Manager
@@ -281,7 +283,7 @@ git push -u origin feat/my-feature
 # open PR to develop on GitHub
 ```
 
-**Block authoring (`model.js`):** Use the `html` tagged-template from `scripts/config/html.js` for all markup templates — never `innerHTML` or `/* html */` strings. Export `CONTENT_MODEL` and `*_MARKUP` (DOM templates). Every `CONTENT_MODEL` field must include `required: true/false`. All named variations must be listed in a `variations` array with their da.live authoring syntax. The `fragment` block is the only exception — no `CONTENT_MODEL`, no CSS.
+**Block authoring (`model.js`):** Use the `html` tagged-template from `scripts/config/html.js` for all markup templates — never `innerHTML` or `/* html */` strings. Export `CONTENT_MODEL` and `*_MARKUP` (DOM templates). Every `CONTENT_MODEL` field must include `required: true/false`. All named variations must be listed in a `variations` array with their da.live authoring syntax. Two upstream exceptions exist: the `fragment` block (no `CONTENT_MODEL`, no CSS) and the `form` block (no `CONTENT_MODEL` — form fields come from AEM Forms JSON, not da.live — but unlike `fragment` it does have CSS and UI).
 
 **Block documentation (`.md`):** Each block's `.md` must contain 8 sections: Overview, Content Model table, Field Definitions table, Variations (one table per variant), Authoring Guidelines, CSS Classes Generated, Performance Notes, Accessibility. Use `/new-block` to scaffold the correct template.
 
@@ -531,24 +533,25 @@ To construct a URL for any branch, use the pattern:
 
 ## Key Links
 
-| Resource                              | URL                                                                                 |
-| ------------------------------------- | ----------------------------------------------------------------------------------- |
-| This repository                       | https://github.com/adityakahb-cts/eds-claude-05-2026                                |
-| AGENTS.md (coding agent instructions) | [AGENTS.md](./AGENTS.md)                                                            |
-| Implementation plan                   | [claude-plan.md](./claude-plan.md)                                                  |
-| da.live (CMS authoring)               | https://da.live/                                                                    |
-| AEM Edge Delivery documentation       | https://www.aem.live/docs/                                                          |
-| Developer tutorial                    | https://www.aem.live/developer/tutorial                                             |
-| Markup, sections, blocks reference    | https://www.aem.live/developer/markup-sections-blocks                               |
-| Web performance guide                 | https://www.aem.live/developer/keeping-it-100                                       |
-| Adobe EDS skills (all)                | https://github.com/adobe/skills/tree/main/plugins/aem/edge-delivery-services/skills |
-| `content-driven-development` skill    | Use before writing block JS — confirms authored structure drives implementation     |
-| `content-modeling` skill              | Interactive CONTENT_MODEL builder with required/optional/variation annotations      |
-| `code-review` skill                   | Automated block diff review — innerHTML, JSDoc, CSS scope, CONTENT_MODEL sync       |
-| `authoring-analysis` skill            | Audits authored da.live pages for missing fields and model drift                    |
-| AEM Code Sync GitHub App              | https://github.com/apps/aem-code-sync                                               |
-| Adobe Status                          | https://status.adobe.com/                                                           |
-| AI coding agents tips                 | https://www.aem.live/developer/ai-coding-agents                                     |
+| Resource                                                                   | URL                                                                                 |
+| -------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| This repository                                                            | https://github.com/adityakahb-cts/eds-claude-05-2026                                |
+| AGENTS.md (coding agent instructions)                                      | [AGENTS.md](./AGENTS.md)                                                            |
+| Implementation plan                                                        | [claude-plan.md](./claude-plan.md)                                                  |
+| da.live (CMS authoring)                                                    | https://da.live/                                                                    |
+| AEM Edge Delivery documentation                                            | https://www.aem.live/docs/                                                          |
+| Developer tutorial                                                         | https://www.aem.live/developer/tutorial                                             |
+| Markup, sections, blocks reference                                         | https://www.aem.live/developer/markup-sections-blocks                               |
+| Web performance guide                                                      | https://www.aem.live/developer/keeping-it-100                                       |
+| Adobe EDS skills (all)                                                     | https://github.com/adobe/skills/tree/main/plugins/aem/edge-delivery-services/skills |
+| `content-driven-development` skill                                         | Use before writing block JS — confirms authored structure drives implementation     |
+| `content-modeling` skill                                                   | Interactive CONTENT_MODEL builder with required/optional/variation annotations      |
+| `code-review` skill                                                        | Automated block diff review — innerHTML, JSDoc, CSS scope, CONTENT_MODEL sync       |
+| `authoring-analysis` skill                                                 | Audits authored da.live pages for missing fields and model drift                    |
+| AEM Code Sync GitHub App                                                   | https://github.com/apps/aem-code-sync                                               |
+| Adobe Status                                                               | https://status.adobe.com/                                                           |
+| AI coding agents tips                                                      | https://www.aem.live/developer/ai-coding-agents                                     |
+| [EDS Form Boilerplate](https://github.com/adobe-rnd/aem-boilerplate-forms) | Upstream source for `blocks/form/` — pull updates from here                         |
 
 ---
 

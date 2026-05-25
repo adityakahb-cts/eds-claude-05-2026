@@ -74,11 +74,12 @@ The repository provides the basic structure, blocks, and configuration needed to
 
 ### Current Blocks
 
-| Block      | Purpose                                         |
-| ---------- | ----------------------------------------------- |
-| `header`   | Site navigation, loaded from `/nav` fragment    |
-| `footer`   | Site footer, loaded from `/footer` fragment     |
-| `fragment` | Inline content inclusion from another page path |
+| Block      | Purpose                                                                                                           |
+| ---------- | ----------------------------------------------------------------------------------------------------------------- |
+| `header`   | Site navigation, loaded from `/nav` fragment                                                                      |
+| `footer`   | Site footer, loaded from `/footer` fragment                                                                       |
+| `fragment` | Inline content inclusion from another page path                                                                   |
+| `form`     | AEM Adaptive Forms — upstream from adobe-rnd/aem-boilerplate-forms; fields defined by AEM Forms JSON, not da.live |
 
 > Use `/new-block <name>` to scaffold a new block with all required files.
 
